@@ -1,27 +1,55 @@
 import psycopg2 
+from psycopg2 import sql  
 import csv
-from connection.connection import start_connection
-from connection.tableHandlers import create_table
+from db.connection.connection import start_connection
+from db.connection.tableHandlers import create_table
+from dateutil.parser import parse
+
+def is_date(string):
+    try:
+        parse(string)
+        return True
+    except ValueError:
+        return False
+
+def is_bool(string):
+    return string.lower() in ['true', 'false']
+
+def is_float(string):
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
 
 def get_csv_info(url):
-    with open(url, 'r') as file: 
-        reader = csv.reader(file)
-        column_headers = next(reader)
-        sample = next(reader)
+    with open(url, 'r') as file:
+        first_line = file.readline().strip()
+        delimiter = ',' if ',' in first_line else '\t' if '\t' in first_line else None
     
-    column_types = [sql.Identifier(header).getquoted() + ' ' + 'TEXT' for header in column_headers]
-    for i, data in enumerate(sample):
-        try:
-            int(data)
-            column_types[i] = sql.Identifier(column_headers[i]).getquoted() + ' ' + 'INTEGER'
-        except ValueError:
-            try:
-                float(data)
-                column_types[i] = sql.Identifier(column_headers[i]).getquoted() + ' ' + 'NUMERIC'
-            except ValueError:
-                pass
+    if delimiter is None:
+        print("Unable to determine delimiter. Please use either comma (,) or tab (\\t).")
+        return None, None
+    
+    with open(url, 'r') as file:
+        reader = csv.reader(file, delimiter=delimiter)
+        column_names = next(reader)
+        
+        column_types = ['VARCHAR(255)'] * len(column_names)
+        
+        for row in reader:
+            for i, value in enumerate(row):
+                if column_types[i] == 'VARCHAR(255)' and value.isdigit():
+                    column_types[i] = 'INTEGER'
+                elif column_types[i] == 'VARCHAR(255)' and is_date(value):
+                    column_types[i] = 'DATE'
+                elif column_types[i] == 'VARCHAR(255)' and is_bool(value):
+                        column_types[i] = 'BOOLEAN'
+                elif column_types[i] == 'VARCHAR(255)' and is_float(value):
+                        column_types[i] == 'REAL'
 
-    return column_headers, column_types
+    return column_names, column_types
+
 
 def try_table_creation(tableName, url) -> bool: 
     try:
@@ -30,11 +58,15 @@ def try_table_creation(tableName, url) -> bool:
 
         col_names, col_types = get_csv_info(url)
 
-        create_table_query = sql.SQL(f"""
-        CREATE TABLE IF NOT EXISTS {tableName} (
-            {sql.SQL(', ').join(sql.SQL(col_type) for col_type in col_types)}
-        )""")
+        columns = [f'"{col_name}" {col_type}' for col_name, col_type in zip(col_names, col_types)]
 
+        create_table_query = f"""
+        CREATE TABLE IF NOT EXISTS {tableName} (
+            {', '.join(columns)}
+        )
+        """
+        
+        print(col_names)
         cur.execute(create_table_query)
         conn.commit()
         cur.close()

@@ -7,3 +7,6 @@ The DB connection credentials you'll find in this code are merely for testing. T
 DB used for testing the program functionalities is merely a demo db. 
 
 Loading screen image thanks to: wirestock on freepik. 
+Csv files for testing from kaggle: 
+https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis
+https://www.kaggle.com/datasets/shrutimechlearn/customer-data
