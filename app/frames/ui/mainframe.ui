@@ -228,6 +228,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionRecent"/>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
@@ -240,6 +241,8 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionAbout_Cmapper"/>
+    <addaction name="actionManual"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDatabase"/>
@@ -253,12 +256,32 @@
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Choose File</string>
    </property>
   </action>
   <action name="actionSelect_DB">
    <property name="text">
     <string>Select DB</string>
+   </property>
+  </action>
+  <action name="actionLoad_CSV">
+   <property name="text">
+    <string>Load File </string>
+   </property>
+  </action>
+  <action name="actionRecent">
+   <property name="text">
+    <string>Recent </string>
+   </property>
+  </action>
+  <action name="actionAbout_Cmapper">
+   <property name="text">
+    <string>About Cmapper</string>
+   </property>
+  </action>
+  <action name="actionManual">
+   <property name="text">
+    <string>Manual</string>
    </property>
   </action>
  </widget>

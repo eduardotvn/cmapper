@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QStatusBar
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTimer
-from .mainframe import MainFrame
+from .mainframe import Ui_MainWindow
 import time 
 
 class OpenFrame(QMainWindow):
@@ -32,8 +33,10 @@ class OpenFrame(QMainWindow):
 
     def load_mainframe(self):
         try:
-            self.main = MainFrame()
-            self.main.show()
+            self.MainWindow = QtWidgets.QMainWindow()
+            self.main = Ui_MainWindow()
+            self.main.setupUi(self.MainWindow)
+            self.MainWindow.show()
             self.close()
         except Exception as e:
             print("Error loading MainFrame:", e)
