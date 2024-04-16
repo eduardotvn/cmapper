@@ -9,4 +9,7 @@ if __name__ == "__main__":
     window = OpenFrame()
     window.show()
 
+    if try_table_creation("sample_table", "app/db/sampleCSV/marketing_campaign.csv"):
+        print("Succesful!")
+
     sys.exit(app.exec_())

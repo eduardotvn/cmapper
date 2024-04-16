@@ -25,8 +25,12 @@ def is_float(string):
 def get_csv_info(url):
     with open(url, 'r') as file:
         first_line = file.readline().strip()
-        delimiter = ',' if ',' in first_line else '\t' if '\t' in first_line else None
-    
+        delimiters = [',','\t',':']
+        delimiter = None
+        for delim in delimiters: 
+            if delim in first_line:
+                delimiter = delim
+
     if delimiter is None:
         print("Unable to determine delimiter. Please use either comma (,) or tab (\\t).")
         return None, None
@@ -35,17 +39,17 @@ def get_csv_info(url):
         reader = csv.reader(file, delimiter=delimiter)
         column_names = next(reader)
         
-        column_types = ['VARCHAR(255)'] * len(column_names)
+        column_types = ['TEXT'] * len(column_names)
         
         for row in reader:
             for i, value in enumerate(row):
-                if column_types[i] == 'VARCHAR(255)' and value.isdigit():
+                if column_types[i] == 'TEXT' and value.isdigit():
                     column_types[i] = 'INTEGER'
-                elif column_types[i] == 'VARCHAR(255)' and is_date(value):
+                elif column_types[i] == 'TEXT' and is_date(value):
                     column_types[i] = 'DATE'
-                elif column_types[i] == 'VARCHAR(255)' and is_bool(value):
+                elif column_types[i] == 'TEXT' and is_bool(value):
                         column_types[i] = 'BOOLEAN'
-                elif column_types[i] == 'VARCHAR(255)' and is_float(value):
+                elif column_types[i] == 'TEXT' and is_float(value):
                         column_types[i] == 'REAL'
 
     return column_names, column_types
