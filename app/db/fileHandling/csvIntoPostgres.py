@@ -3,21 +3,12 @@ from psycopg2 import sql
 import csv
 from db.connection.connection import start_connection
 from db.connection.tableHandlers import create_table
+from db.fileHandling.typechecker.checker import sqlTypeReturn, convert_to_iso_date
 from dateutil.parser import parse
 
 def is_date(string):
     try:
         parse(string)
-        return True
-    except ValueError:
-        return False
-
-def is_bool(string):
-    return string.lower() in ['true', 'false']
-
-def is_float(string):
-    try:
-        float(string)
         return True
     except ValueError:
         return False
@@ -43,16 +34,37 @@ def get_csv_info(url):
         
         for row in reader:
             for i, value in enumerate(row):
-                if column_types[i] == 'TEXT' and value.isdigit():
-                    column_types[i] = 'INTEGER'
-                elif column_types[i] == 'TEXT' and is_date(value):
-                    column_types[i] = 'DATE'
-                elif column_types[i] == 'TEXT' and is_bool(value):
-                        column_types[i] = 'BOOLEAN'
-                elif column_types[i] == 'TEXT' and is_float(value):
-                        column_types[i] == 'REAL'
+                if sqlTypeReturn(value) == "UKNOWN":
+                    raise TypeError("Not a supported variable type")
+                column_types[i] = sqlTypeReturn(value)
 
     return column_names, column_types
+
+def get_csv_data(url):
+    with open(url, 'r') as file:
+        first_line = file.readline().strip()
+        delimiters = [',','\t',':']
+        delimiter = None
+        for delim in delimiters: 
+            if delim in first_line:
+                delimiter = delim
+
+    if delimiter is None:
+        print("Unable to determine delimiter. Please use either comma (,) or tab (\\t).")
+        return None
+    
+    with open(url, 'r') as file:
+        reader = csv.reader(file, delimiter=delimiter)
+        next(reader) 
+        
+        data = []
+        for row in reader:
+            for index, value in enumerate(row):
+                if sqlTypeReturn(value) == "DATE":
+                    row[index] = convert_to_iso_date(value)
+            data.append(row)
+
+    return data
 
 
 def try_table_creation(tableName, url) -> bool: 
@@ -69,8 +81,6 @@ def try_table_creation(tableName, url) -> bool:
             {', '.join(columns)}
         )
         """
-        
-        print(col_names)
         cur.execute(create_table_query)
         conn.commit()
         cur.close()
@@ -79,3 +89,33 @@ def try_table_creation(tableName, url) -> bool:
     except psycopg2.Error as e:
         raise psycopg2.Error(f"{e}")
         return False 
+
+def try_table_insertion(tableName: str, url: str) -> bool:
+    try:
+        _, conn = start_connection()
+        cur = conn.cursor()
+        
+        col_names, _ = get_csv_info(url)
+        columns = [f'"{col_name}"' for col_name in col_names]
+        data = get_csv_data(url)
+
+        print(columns)
+
+        insertion_query = f"""
+        INSERT INTO {tableName} 
+        (
+            {', '.join(columns)}
+        )
+        VALUES
+        {", ".join(["(" + ", ".join([f"'{value}'" if value != "" else 'NULL' for value in row]) + ")" for row in data])}
+        """
+        cur.execute(insertion_query)
+        conn.commit()
+
+        cur.close()
+        conn.close()
+        return True
+    except psycopg2.Error as e:
+        raise e
+        return False 
+    
