@@ -1,5 +1,5 @@
 import psycopg2
-from connection.connection import start_connection
+from db.connection.connection import start_connection
 
 def insert_table(tableName = None, insertionSchema = None) -> bool:
     try:
@@ -39,16 +39,48 @@ def update_table(tableName = None, updateSchema = None) -> bool:
     #Under development
     pass 
 
+def select_all_cols(tableName: str) -> list: 
+    try: 
+        _, conn = start_connection()
+        cur = conn.cursor()
+
+        cur.execute(f"""
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = %s;
+        """, (tableName,))
+        headers = [row[0] for row in cur.fetchall()]
+
+        cur.close()
+        conn.close()
+        return headers
+    except psycopg2.Error as e:
+        return []
+
+
+def select_all_rows(tableName) -> list:
+    try: 
+        _, conn = start_connection() 
+        cur = conn.cursor()
+
+        cur.execute(f"SELECT * FROM {tableName}")
+
+        all_rows = cur.fetchall()
+
+        headers = select_all_cols(tableName)
+
+        return all_rows, headers
+    except psycopg2.Error as e: 
+        return []
+
 def filter_rows(tableName = None, filter = None, column = None) -> list:
     try:
         _, conn = start_connection()
 
         cur = conn.cursor() 
 
-        if type(filter) == str: 
-            cur.execute(f"SELECT * FROM {tableName} WHERE {column} LIKE ?", (f"{filter}%",))
-        elif isinstance(filter, (int, float, complex)): 
-            cur.execute(f"SELECT * FROM {tableName} WHERE {column} = ?", (filter,))
+        cur.execute(f'SELECT * FROM {tableName} WHERE "{column}"::TEXT LIKE %s', (f"{filter}%",))
 
         rows = cur.fetchall() 
         cur.close()

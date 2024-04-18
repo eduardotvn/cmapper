@@ -38,21 +38,6 @@ def get_csv_info(url):
                     raise TypeError("Not a supported variable type")
                 column_types[i] = sqlTypeReturn(value)
 
-    return column_names, column_types
-
-def get_csv_data(url):
-    with open(url, 'r') as file:
-        first_line = file.readline().strip()
-        delimiters = [',','\t',':']
-        delimiter = None
-        for delim in delimiters: 
-            if delim in first_line:
-                delimiter = delim
-
-    if delimiter is None:
-        print("Unable to determine delimiter. Please use either comma (,) or tab (\\t).")
-        return None
-    
     with open(url, 'r') as file:
         reader = csv.reader(file, delimiter=delimiter)
         next(reader) 
@@ -64,47 +49,30 @@ def get_csv_data(url):
                     row[index] = convert_to_iso_date(value)
             data.append(row)
 
-    return data
+    return column_names, column_types, data
 
-
-def try_table_creation(tableName, url) -> bool: 
+def try_table_creation(tableName : str, url : str) -> bool: 
     try:
         _, conn = start_connection()
         cur = conn.cursor() 
 
-        col_names, col_types = get_csv_info(url)
+        col_names, col_types, data = get_csv_info(url)
 
-        columns = [f'"{col_name}" {col_type}' for col_name, col_type in zip(col_names, col_types)]
+        columns_for_creation = [f'"{col_name}" {col_type}' for col_name, col_type in zip(col_names, col_types)]
+        columns_for_insertion = [f'"{col_name}"' for col_name in col_names]
 
         create_table_query = f"""
         CREATE TABLE IF NOT EXISTS {tableName} (
-            {', '.join(columns)}
+            {', '.join(columns_for_creation)}
         )
         """
         cur.execute(create_table_query)
         conn.commit()
-        cur.close()
-        conn.close()
-        return True 
-    except psycopg2.Error as e:
-        raise psycopg2.Error(f"{e}")
-        return False 
-
-def try_table_insertion(tableName: str, url: str) -> bool:
-    try:
-        _, conn = start_connection()
-        cur = conn.cursor()
-        
-        col_names, _ = get_csv_info(url)
-        columns = [f'"{col_name}"' for col_name in col_names]
-        data = get_csv_data(url)
-
-        print(columns)
 
         insertion_query = f"""
         INSERT INTO {tableName} 
         (
-            {', '.join(columns)}
+            {', '.join(columns_for_insertion)}
         )
         VALUES
         {", ".join(["(" + ", ".join([f"'{value}'" if value != "" else 'NULL' for value in row]) + ")" for row in data])}
@@ -114,8 +82,8 @@ def try_table_insertion(tableName: str, url: str) -> bool:
 
         cur.close()
         conn.close()
-        return True
+        return True 
     except psycopg2.Error as e:
-        raise e
+        raise psycopg2.Error(f"{e}")
         return False 
     

@@ -1,96 +1,137 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from .buttons.mainButtons import refresh_db_visualization
+from .buttons.mainFuncs import filter_db
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1029, 576)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox.setGeometry(QtCore.QRect(210, 0, 811, 521))
         self.groupBox.setObjectName("groupBox")
+
         self.DBVisualization = QtWidgets.QTableWidget(self.groupBox)
         self.DBVisualization.setGeometry(QtCore.QRect(30, 30, 741, 351))
         self.DBVisualization.setObjectName("DBVisualization")
         self.DBVisualization.setColumnCount(0)
         self.DBVisualization.setRowCount(0)
+
         self.FilterInput = QtWidgets.QLineEdit(self.groupBox)
         self.FilterInput.setGeometry(QtCore.QRect(90, 390, 231, 41))
         self.FilterInput.setObjectName("FilterInput")
+        self.FilterInput.textChanged.connect(lambda text: filter_db(self, "sample_database", text))
+
         self.Columns = QtWidgets.QComboBox(self.groupBox)
         self.Columns.setGeometry(QtCore.QRect(410, 390, 231, 41))
         self.Columns.setObjectName("Columns")
+
         self.SearchLabel = QtWidgets.QLabel(self.groupBox)
         self.SearchLabel.setGeometry(QtCore.QRect(340, 400, 71, 21))
         self.SearchLabel.setObjectName("SearchLabel")
+
         self.FilterLabel = QtWidgets.QLabel(self.groupBox)
         self.FilterLabel.setGeometry(QtCore.QRect(50, 400, 31, 21))
         self.FilterLabel.setObjectName("FilterLabel")
+
         self.InputDataButton = QtWidgets.QPushButton(self.groupBox)
         self.InputDataButton.setGeometry(QtCore.QRect(30, 470, 88, 34))
         self.InputDataButton.setObjectName("InputDataButton")
+
         self.UpdateButton = QtWidgets.QPushButton(self.groupBox)
         self.UpdateButton.setGeometry(QtCore.QRect(150, 470, 88, 34))
         self.UpdateButton.setObjectName("UpdateButton")
+
         self.DeleteButton = QtWidgets.QPushButton(self.groupBox)
         self.DeleteButton.setGeometry(QtCore.QRect(270, 470, 88, 34))
         self.DeleteButton.setObjectName("DeleteButton")
+        
         self.AlterDBButton = QtWidgets.QPushButton(self.groupBox)
         self.AlterDBButton.setGeometry(QtCore.QRect(670, 470, 121, 34))
         self.AlterDBButton.setObjectName("AlterDBButton")
+
         self.RefreshButton = QtWidgets.QPushButton(self.groupBox)
         self.RefreshButton.setGeometry(QtCore.QRect(390, 470, 88, 34))
         self.RefreshButton.setObjectName("RefreshButton")
+        self.RefreshButton.setText("Refresh")
+        self.RefreshButton.clicked.connect(lambda: refresh_db_visualization(self, "sample_database"))
+
         self.VisualizationButton = QtWidgets.QPushButton(self.centralwidget)
         self.VisualizationButton.setGeometry(QtCore.QRect(50, 20, 91, 91))
         self.VisualizationButton.setObjectName("VisualizationButton")
+
         self.ChartsButton = QtWidgets.QPushButton(self.centralwidget)
         self.ChartsButton.setGeometry(QtCore.QRect(50, 120, 91, 91))
         self.ChartsButton.setObjectName("ChartsButton")
+
         self.PCAButton = QtWidgets.QPushButton(self.centralwidget)
         self.PCAButton.setGeometry(QtCore.QRect(50, 220, 91, 91))
         self.PCAButton.setObjectName("PCAButton")
+
         self.CorrelationButton = QtWidgets.QPushButton(self.centralwidget)
         self.CorrelationButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
         self.CorrelationButton.setObjectName("CorrelationButton")
+
         self.OtherButton = QtWidgets.QPushButton(self.centralwidget)
         self.OtherButton.setGeometry(QtCore.QRect(50, 420, 91, 91))
         self.OtherButton.setObjectName("OtherButton")
+
         MainWindow.setCentralWidget(self.centralwidget)
+
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1029, 30))
         self.menubar.setObjectName("menubar")
+
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
+
         self.menuDatabase = QtWidgets.QMenu(self.menubar)
         self.menuDatabase.setObjectName("menuDatabase")
+
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
+
         MainWindow.setMenuBar(self.menubar)
+
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
+
         MainWindow.setStatusBar(self.statusbar)
+
         self.actionClose = QtWidgets.QAction(MainWindow)
         self.actionClose.setObjectName("actionClose")
+
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
+
         self.actionSelect_DB = QtWidgets.QAction(MainWindow)
         self.actionSelect_DB.setObjectName("actionSelect_DB")
+
         self.actionLoad_CSV = QtWidgets.QAction(MainWindow)
         self.actionLoad_CSV.setObjectName("actionLoad_CSV")
+
         self.actionRecent = QtWidgets.QAction(MainWindow)
         self.actionRecent.setObjectName("actionRecent")
+
         self.actionAbout_Cmapper = QtWidgets.QAction(MainWindow)
         self.actionAbout_Cmapper.setObjectName("actionAbout_Cmapper")
+
         self.actionManual = QtWidgets.QAction(MainWindow)
         self.actionManual.setObjectName("actionManual")
+
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionRecent)
         self.menuFile.addAction(self.actionClose)
+
         self.menuDatabase.addAction(self.actionSelect_DB)
+
         self.menuHelp.addAction(self.actionAbout_Cmapper)
         self.menuHelp.addAction(self.actionManual)
+
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuDatabase.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -124,4 +165,3 @@ class Ui_MainWindow(object):
         self.actionRecent.setText(_translate("MainWindow", "Recent "))
         self.actionAbout_Cmapper.setText(_translate("MainWindow", "About Cmapper"))
         self.actionManual.setText(_translate("MainWindow", "Manual"))
-
