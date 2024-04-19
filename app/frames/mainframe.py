@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .buttons.mainButtons import refresh_db_visualization
+from .dialogs.createDbDialog import Ui_CreateDatabaseFromFile
 from .buttons.mainFuncs import filter_db
 
 class Ui_MainWindow(object):
@@ -11,50 +12,50 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(210, 0, 811, 521))
-        self.groupBox.setObjectName("groupBox")
+        self.VisualizationGB = QtWidgets.QGroupBox(self.centralwidget)
+        self.VisualizationGB.setGeometry(QtCore.QRect(210, 0, 811, 521))
+        self.VisualizationGB.setObjectName("VisualizationGB")
 
-        self.DBVisualization = QtWidgets.QTableWidget(self.groupBox)
+        self.DBVisualization = QtWidgets.QTableWidget(self.VisualizationGB)
         self.DBVisualization.setGeometry(QtCore.QRect(30, 30, 741, 351))
         self.DBVisualization.setObjectName("DBVisualization")
         self.DBVisualization.setColumnCount(0)
         self.DBVisualization.setRowCount(0)
 
-        self.FilterInput = QtWidgets.QLineEdit(self.groupBox)
+        self.FilterInput = QtWidgets.QLineEdit(self.VisualizationGB)
         self.FilterInput.setGeometry(QtCore.QRect(90, 390, 231, 41))
         self.FilterInput.setObjectName("FilterInput")
-        self.FilterInput.textChanged.connect(lambda text: filter_db(self, "sample_database", text))
+        self.FilterInput.returnPressed.connect(lambda: filter_db(self, "sample_database", self.FilterInput.text()))
 
-        self.Columns = QtWidgets.QComboBox(self.groupBox)
+        self.Columns = QtWidgets.QComboBox(self.VisualizationGB)
         self.Columns.setGeometry(QtCore.QRect(410, 390, 231, 41))
         self.Columns.setObjectName("Columns")
 
-        self.SearchLabel = QtWidgets.QLabel(self.groupBox)
+        self.SearchLabel = QtWidgets.QLabel(self.VisualizationGB)
         self.SearchLabel.setGeometry(QtCore.QRect(340, 400, 71, 21))
         self.SearchLabel.setObjectName("SearchLabel")
 
-        self.FilterLabel = QtWidgets.QLabel(self.groupBox)
+        self.FilterLabel = QtWidgets.QLabel(self.VisualizationGB)
         self.FilterLabel.setGeometry(QtCore.QRect(50, 400, 31, 21))
         self.FilterLabel.setObjectName("FilterLabel")
 
-        self.InputDataButton = QtWidgets.QPushButton(self.groupBox)
+        self.InputDataButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.InputDataButton.setGeometry(QtCore.QRect(30, 470, 88, 34))
         self.InputDataButton.setObjectName("InputDataButton")
 
-        self.UpdateButton = QtWidgets.QPushButton(self.groupBox)
+        self.UpdateButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.UpdateButton.setGeometry(QtCore.QRect(150, 470, 88, 34))
         self.UpdateButton.setObjectName("UpdateButton")
 
-        self.DeleteButton = QtWidgets.QPushButton(self.groupBox)
+        self.DeleteButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.DeleteButton.setGeometry(QtCore.QRect(270, 470, 88, 34))
         self.DeleteButton.setObjectName("DeleteButton")
         
-        self.AlterDBButton = QtWidgets.QPushButton(self.groupBox)
+        self.AlterDBButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.AlterDBButton.setGeometry(QtCore.QRect(670, 470, 121, 34))
         self.AlterDBButton.setObjectName("AlterDBButton")
 
-        self.RefreshButton = QtWidgets.QPushButton(self.groupBox)
+        self.RefreshButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.RefreshButton.setGeometry(QtCore.QRect(390, 470, 88, 34))
         self.RefreshButton.setObjectName("RefreshButton")
         self.RefreshButton.setText("Refresh")
@@ -107,6 +108,7 @@ class Ui_MainWindow(object):
 
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
+        self.actionOpen.triggered.connect(self.run_creation_dialog)
 
         self.actionSelect_DB = QtWidgets.QAction(MainWindow)
         self.actionSelect_DB.setObjectName("actionSelect_DB")
@@ -139,10 +141,16 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def run_creation_dialog(self):
+        self.Creatrion_Dialog = QtWidgets.QDialog()
+        self.CDialog = Ui_CreateDatabaseFromFile()
+        self.CDialog.setupUi(self.Creatrion_Dialog)
+        self.Creatrion_Dialog.show()
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Cmapper"))
-        self.groupBox.setTitle(_translate("MainWindow", "Database Visualization"))
+        self.VisualizationGB.setTitle(_translate("MainWindow", "Database Visualization"))
         self.SearchLabel.setText(_translate("MainWindow", "Search in"))
         self.FilterLabel.setText(_translate("MainWindow", "Filter"))
         self.InputDataButton.setText(_translate("MainWindow", "Input"))

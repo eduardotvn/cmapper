@@ -29,7 +29,7 @@ class OpenFrame(QMainWindow):
         self.status_bar.setStyleSheet("background-color: white;") 
         self.status_bar.showMessage("Loading...")
 
-        QTimer.singleShot(3000, self.load_mainframe)
+        QTimer.singleShot(1000, self.load_mainframe)
 
     def load_mainframe(self):
         try:
