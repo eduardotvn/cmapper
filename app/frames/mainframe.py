@@ -1,9 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization
-from .dialogs.createDbDialog import Ui_CreateDatabaseFromFile
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog
 from .buttons.mainFuncs import filter_db
 
 class Ui_MainWindow(object):
+    def __init__(self): 
+        self.current_db = None 
+
     def setupUi(self, MainWindow):
 
         MainWindow.setObjectName("MainWindow")
@@ -108,7 +110,7 @@ class Ui_MainWindow(object):
 
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionOpen.triggered.connect(self.run_creation_dialog)
+        self.actionOpen.triggered.connect(lambda: run_creation_dialog(self))
 
         self.actionSelect_DB = QtWidgets.QAction(MainWindow)
         self.actionSelect_DB.setObjectName("actionSelect_DB")
@@ -141,11 +143,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def run_creation_dialog(self):
-        self.Creatrion_Dialog = QtWidgets.QDialog()
-        self.CDialog = Ui_CreateDatabaseFromFile()
-        self.CDialog.setupUi(self.Creatrion_Dialog)
-        self.Creatrion_Dialog.show()
+    def run_refresh(self):
+        refresh_db_visualization(self, self.current_db)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

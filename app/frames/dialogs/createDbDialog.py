@@ -5,7 +5,6 @@ from db.fileHandling.csvIntoPostgres import try_table_creation
 class Ui_CreateDatabaseFromFile(object):
     def __init__(self):
         self.chosen_file = None 
-        self.CancelButton.clicked.connect(self.close)
 
     def setupUi(self, CreateDatabaseFromFile):
         CreateDatabaseFromFile.setObjectName("CreateDatabaseFromFile")
@@ -31,11 +30,12 @@ class Ui_CreateDatabaseFromFile(object):
         self.OkButton = QtWidgets.QPushButton(CreateDatabaseFromFile)
         self.OkButton.setGeometry(QtCore.QRect(210, 130, 88, 34))
         self.OkButton.setObjectName("OkButton")
-        self.OkButton.clicked.connect(self.table_creation)
+        self.OkButton.clicked.connect(lambda: self.table_creation(CreateDatabaseFromFile))
 
         self.CancelButton = QtWidgets.QPushButton(CreateDatabaseFromFile)
         self.CancelButton.setGeometry(QtCore.QRect(310, 130, 88, 34))
         self.CancelButton.setObjectName("CancelButton")
+        self.CancelButton.clicked.connect(CreateDatabaseFromFile.close)
 
         self.URLPath = QtWidgets.QLabel(CreateDatabaseFromFile)
         self.URLPath.setGeometry(QtCore.QRect(170, 70, 221, 41))
@@ -60,19 +60,22 @@ class Ui_CreateDatabaseFromFile(object):
     
     def get_db_name(self):
         current_text = self.DBNameInput.text()
-        if current_text.lstrip() == "":
+        if current_text.strip() == "":
             return False, ""
         else: 
+            current_text = ''.join([c if c !=' ' else '_' for c in current_text.strip()])
             return True, current_text
     
-    def table_creation(self):
+    def table_creation(self, CreateDatabaseFromFile):
         con, dbname = self.get_db_name()
         if not con: 
             return 
         if self.chosen_file is not None:
             try_table_creation(dbname, self.chosen_file)
             self.chosen_file = None
-            self.close(self)
+            self.main_window.current_db = dbname
+            self.main_window.run_refresh()
+            CreateDatabaseFromFile.close()
     
     def retranslateUi(self, CreateDatabaseFromFile):
         _translate = QtCore.QCoreApplication.translate
