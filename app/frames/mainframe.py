@@ -5,6 +5,8 @@ from .buttons.mainFuncs import filter_db
 class Ui_MainWindow(object):
     def __init__(self): 
         self.current_db = None 
+        self.found_containers = None 
+        self.current_container = None 
 
     def setupUi(self, MainWindow):
 
@@ -142,6 +144,10 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    
+    def set_container_data(self, containers : list):
+        self.current_container = containers[0].split()[-1]
+        self.found_containers = [name.split()[-1] for name in containers] 
 
     def run_refresh(self):
         refresh_db_visualization(self, self.current_db)

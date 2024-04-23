@@ -1,8 +1,8 @@
 from .connection import start_connection
 import psycopg2
 
-def check_tables() -> list:
-    _, conn = start_connection()
+def check_tables(username, password) -> list:
+    _, conn = start_connection(username, password)
     cur = conn.cursor()
     cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'""")
 
@@ -12,9 +12,9 @@ def check_tables() -> list:
     conn.close()
     return existing_tables
 
-def create_table(tableName = None, tableSchema = None) -> bool: 
+def create_table(tableName, tableSchema, username, password) -> bool: 
     try: 
-        _, conn = start_connection() 
+        _, conn = start_connection(username, password) 
         cur = conn.cursor() 
 
         creation_order = "CREATE TABLE IF NOT EXISTS " + tableName
@@ -33,9 +33,9 @@ def create_table(tableName = None, tableSchema = None) -> bool:
         raise psycopg2.Error(f"{e}")
         return False 
 
-def delete_table(tableName = None) -> bool:
+def delete_table(tableName, username, password) -> bool:
     try: 
-        _, conn = start_connection()
+        _, conn = start_connection(username, password)
         cur = conn.cursor()
 
         cur.execute(f"""DROP TABLE IF EXISTS {tableName}""")

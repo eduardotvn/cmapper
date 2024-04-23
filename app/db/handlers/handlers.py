@@ -1,9 +1,9 @@
 import psycopg2
 from db.connection.connection import start_connection
 
-def insert_table(tableName = None, insertionSchema = None) -> bool:
+def insert_table(tableName, insertionSchema, username, password) -> bool:
     try:
-        _, conn = start_connection()
+        _, conn = start_connection(username, password)
         cursor = conn.cursor()
 
         cur.execute(f"""SELECT column_names FROM information_schema.columns WHERE table_name = '{tableName}'""")
@@ -35,13 +35,13 @@ def insert_table(tableName = None, insertionSchema = None) -> bool:
         raise psycopg2.Error(f"{e}")
         return False 
 
-def update_table(tableName = None, updateSchema = None) -> bool: 
+def update_table(tableName , updateSchema, username, password) -> bool: 
     #Under development
     pass 
 
-def select_all_cols(tableName: str) -> list: 
+def select_all_cols(tableName: str, username, password) -> list: 
     try: 
-        _, conn = start_connection()
+        _, conn = start_connection(username, password)
         cur = conn.cursor()
 
         cur.execute(f"""
@@ -59,9 +59,9 @@ def select_all_cols(tableName: str) -> list:
         return []
 
 
-def select_all_rows(tableName) -> list:
+def select_all_rows(tableName, username, password) -> list:
     try: 
-        _, conn = start_connection() 
+        _, conn = start_connection(username, password) 
         cur = conn.cursor()
 
         cur.execute(f"SELECT * FROM {tableName}")
@@ -74,9 +74,9 @@ def select_all_rows(tableName) -> list:
     except psycopg2.Error as e: 
         return []
 
-def filter_rows(tableName = None, filter = None, column = None) -> list:
+def filter_rows(tableName, filter, column, username, password) -> list:
     try:
-        _, conn = start_connection()
+        _, conn = start_connection(username, password)
 
         cur = conn.cursor() 
 
@@ -90,9 +90,9 @@ def filter_rows(tableName = None, filter = None, column = None) -> list:
         raise psycopg2.Error(f"{e}")
         return []
 
-def delete_row(tableName = None, identifier = None) -> bool:
+def delete_row(tableName, identifier, username, password) -> bool:
     try: 
-        _, conn = start_connection()
+        _, conn = start_connection(username, password)
         cur = conn.cursor()
 
         query = f"DELETE FROM {table_name} WHERE {condition_column} = ?"

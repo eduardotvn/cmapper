@@ -12,11 +12,4 @@ def find_running_postgres_containers():
         print(f"Error listing Docker containers: {e}")
         return []
 
-if __name__ == "__main__":
-    postgres_containers = find_running_postgres_containers()
-    if postgres_containers:
-        print("Running PostgreSQL containers:")
-        for container in postgres_containers:
-            print(container)
-    else:
-        print("No running PostgreSQL containers found.")
+

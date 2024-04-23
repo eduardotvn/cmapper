@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QStatusBar
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QTimer
+from docker.findcontainers import find_running_postgres_containers
 from .mainframe import Ui_MainWindow
 import time 
 
@@ -15,6 +15,9 @@ class OpenFrame(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Cmapper") 
+
+        self.first = None 
+        self.container_list = []
 
         pixmap = QPixmap("app/assets/images/beautiful-shot-colorful-tulips-field-sunny-day.jpg").scaled(1024, 576)
 
@@ -29,16 +32,16 @@ class OpenFrame(QMainWindow):
         self.status_bar.setStyleSheet("background-color: white;") 
         self.status_bar.showMessage("Loading...")
 
-        QTimer.singleShot(1000, self.load_mainframe)
+        self.load_mainframe()
 
     def load_mainframe(self):
         try:
-            self.MainWindow = QtWidgets.QMainWindow()
-            self.main = Ui_MainWindow()
-            self.main.setupUi(self.MainWindow)
-            self.MainWindow.show()
+            MainWindow = QtWidgets.QMainWindow()
+            main = Ui_MainWindow()
+            main.setupUi(MainWindow)
+            MainWindow.show()
+            main.set_container_data(find_running_postgres_containers())
             self.close()
         except Exception as e:
             print("Error loading MainFrame:", e)
-        
 
