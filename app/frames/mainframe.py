@@ -1,10 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog
-from .buttons.mainFuncs import filter_db
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog
+from .buttons.mainFuncs import filter_db, load_tables
+from docker.findcontainers import run_container
+from db.connection.tableHandlers import check_tables
 
 class Ui_MainWindow(object):
     def __init__(self): 
-        self.current_db = None 
+        self.current_table = None 
+        self.found_tables = None
         self.found_containers = None 
         self.current_container = None 
 
@@ -21,7 +24,7 @@ class Ui_MainWindow(object):
         self.VisualizationGB.setObjectName("VisualizationGB")
 
         self.DBVisualization = QtWidgets.QTableWidget(self.VisualizationGB)
-        self.DBVisualization.setGeometry(QtCore.QRect(30, 30, 741, 351))
+        self.DBVisualization.setGeometry(QtCore.QRect(30, 50, 741, 311))
         self.DBVisualization.setObjectName("DBVisualization")
         self.DBVisualization.setColumnCount(0)
         self.DBVisualization.setRowCount(0)
@@ -29,11 +32,16 @@ class Ui_MainWindow(object):
         self.FilterInput = QtWidgets.QLineEdit(self.VisualizationGB)
         self.FilterInput.setGeometry(QtCore.QRect(90, 390, 231, 41))
         self.FilterInput.setObjectName("FilterInput")
-        self.FilterInput.returnPressed.connect(lambda: filter_db(self, "sample_database", self.FilterInput.text()))
+        self.FilterInput.returnPressed.connect(lambda: filter_db(self, self.current_table, self.FilterInput.text()))
 
         self.Columns = QtWidgets.QComboBox(self.VisualizationGB)
         self.Columns.setGeometry(QtCore.QRect(410, 390, 231, 41))
         self.Columns.setObjectName("Columns")
+
+        self.Tables = QtWidgets.QComboBox(self.VisualizationGB)
+        self.Tables.setGeometry(QtCore.QRect(510, 5, 231, 41))
+        self.Tables.setObjectName("Tables")
+        self.Tables.currentIndexChanged.connect(self.set_current_table)
 
         self.SearchLabel = QtWidgets.QLabel(self.VisualizationGB)
         self.SearchLabel.setGeometry(QtCore.QRect(340, 400, 71, 21))
@@ -63,7 +71,7 @@ class Ui_MainWindow(object):
         self.RefreshButton.setGeometry(QtCore.QRect(390, 470, 88, 34))
         self.RefreshButton.setObjectName("RefreshButton")
         self.RefreshButton.setText("Refresh")
-        self.RefreshButton.clicked.connect(lambda: refresh_db_visualization(self, "sample_database"))
+        self.RefreshButton.clicked.connect(lambda: refresh_db_visualization(self, self.current_table))
 
         self.VisualizationButton = QtWidgets.QPushButton(self.centralwidget)
         self.VisualizationButton.setGeometry(QtCore.QRect(50, 20, 91, 91))
@@ -97,6 +105,9 @@ class Ui_MainWindow(object):
         self.menuDatabase = QtWidgets.QMenu(self.menubar)
         self.menuDatabase.setObjectName("menuDatabase")
 
+        self.menuDocker = QtWidgets.QMenu(self.menubar)
+        self.menuDocker.setObjectName("menuDocker")
+
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
@@ -117,6 +128,10 @@ class Ui_MainWindow(object):
         self.actionSelect_DB = QtWidgets.QAction(MainWindow)
         self.actionSelect_DB.setObjectName("actionSelect_DB")
 
+        self.actionSelect_Docker = QtWidgets.QAction(MainWindow)
+        self.actionSelect_Docker.setObjectName("actionSelect_Docker")  
+        self.actionSelect_Docker.triggered.connect(lambda: run_choose_container_dialog(self))
+
         self.actionLoad_CSV = QtWidgets.QAction(MainWindow)
         self.actionLoad_CSV.setObjectName("actionLoad_CSV")
 
@@ -135,22 +150,51 @@ class Ui_MainWindow(object):
 
         self.menuDatabase.addAction(self.actionSelect_DB)
 
+        self.menuDocker.addAction(self.actionSelect_Docker)
+
         self.menuHelp.addAction(self.actionAbout_Cmapper)
         self.menuHelp.addAction(self.actionManual)
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuDatabase.menuAction())
+        self.menubar.addAction(self.menuDocker.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
+
+        self.set_tables()
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     
     def set_container_data(self, containers : list):
         self.current_container = containers[0].split()[-1]
         self.found_containers = [name.split()[-1] for name in containers] 
 
+        print(self.found_containers)
+
+        self.run_chosen_container()
+
+    def set_tables(self):
+        tables = check_tables()
+        self.found_tables = [table[0] for table in tables]
+        print(self.found_tables)
+        self.current_table = self.found_tables[0] 
+        load_tables(self, self.found_tables)
+    
+    def set_current_table(self):
+        table = self.Tables.currentText()
+        self.current_table = table
+        if self.found_containers != None: 
+            self.run_refresh()
+
+    def run_chosen_container(self):
+        if run_container(self.current_container):
+            print("Succesfully running container")
+        else: 
+            print("Something went wrong")
+
     def run_refresh(self):
-        refresh_db_visualization(self, self.current_db)
+        refresh_db_visualization(self, self.current_table)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -170,10 +214,12 @@ class Ui_MainWindow(object):
         self.OtherButton.setText(_translate("MainWindow", "Other"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuDatabase.setTitle(_translate("MainWindow", "Database"))
+        self.menuDocker.setTitle(_translate("MainWindow", "Docker"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionClose.setText(_translate("MainWindow", "Close "))
         self.actionOpen.setText(_translate("MainWindow", "Choose File"))
         self.actionSelect_DB.setText(_translate("MainWindow", "Select DB"))
+        self.actionSelect_Docker.setText(_translate("MainWindow", "Select Docker"))
         self.actionLoad_CSV.setText(_translate("MainWindow", "Load File "))
         self.actionRecent.setText(_translate("MainWindow", "Recent "))
         self.actionAbout_Cmapper.setText(_translate("MainWindow", "About Cmapper"))

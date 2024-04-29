@@ -8,6 +8,12 @@ def load_columns(self, tableName: str):
     except Exception as e: 
         print(e)
 
+def load_tables(self, tables: list):
+    try:
+        self.Tables.addItems(tables)
+    except Exception as e: 
+        print(e)
+
 def filter_db(self, tableName, filter_text):
     try:    
         header = select_all_cols(tableName)

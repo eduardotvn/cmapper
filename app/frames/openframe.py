@@ -36,11 +36,11 @@ class OpenFrame(QMainWindow):
 
     def load_mainframe(self):
         try:
-            MainWindow = QtWidgets.QMainWindow()
-            main = Ui_MainWindow()
-            main.setupUi(MainWindow)
-            MainWindow.show()
-            main.set_container_data(find_running_postgres_containers())
+            self.MainWindow = QtWidgets.QMainWindow()
+            self.main = Ui_MainWindow()
+            self.main.setupUi(self.MainWindow)
+            self.MainWindow.show()
+            self.main.set_container_data(find_running_postgres_containers())
             self.close()
         except Exception as e:
             print("Error loading MainFrame:", e)

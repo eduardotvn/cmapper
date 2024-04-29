@@ -6,11 +6,13 @@ from dotenv import load_dotenv
 
 
 if __name__ == "__main__":
+    
+    load_dotenv(".env")
 
     app = QApplication(sys.argv)
     window = OpenFrame()
     window.show()
 
-    load_dotenv(".env")
+
 
     sys.exit(app.exec_())
