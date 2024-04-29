@@ -32,8 +32,6 @@ class OpenFrame(QMainWindow):
         self.status_bar.setStyleSheet("background-color: white;") 
         self.status_bar.showMessage("Loading...")
 
-        self.load_mainframe()
-
     def load_mainframe(self):
         try:
             self.MainWindow = QtWidgets.QMainWindow()

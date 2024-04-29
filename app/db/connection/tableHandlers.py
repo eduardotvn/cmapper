@@ -2,15 +2,21 @@ from .connection import start_connection
 import psycopg2
 
 def check_tables() -> list:
-    _, conn = start_connection()
-    cur = conn.cursor()
-    cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'""")
+    try:
+        _, conn = start_connection()
+        cur = conn.cursor()
+        cur.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'""")
 
-    existing_tables = cur.fetchall()
-        
-    cur.close()
-    conn.close()
-    return existing_tables
+        existing_tables = cur.fetchall()
+            
+        cur.close()
+        conn.close()
+
+        print(existing_tables)
+        return existing_tables
+    except Exception as e:
+        print("Error while checking tables :", e)
+        return []
 
 def create_table(tableName, tableSchema, ) -> bool: 
     try: 

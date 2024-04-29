@@ -15,9 +15,9 @@ def refresh_db_visualization(self, tableName):
     data, header = select_all_rows(tableName)
 
     if len(data) == 0:
+        self.DBVisualization.clear()
         self.DBVisualization.setRowCount(0)
         self.DBVisualization.setColumnCount(0)
-        self.DBVisualization.setHorizontalHeaderLabels([""])
         return
 
     self.DBVisualization.setRowCount(len(data))

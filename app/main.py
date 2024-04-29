@@ -12,7 +12,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = OpenFrame()
     window.show()
-
-
-
+    window.load_mainframe()
     sys.exit(app.exec_())

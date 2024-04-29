@@ -15,7 +15,6 @@ def find_running_postgres_containers():
 def run_container(container_name):
     try: 
         subprocess.run(['sudo', 'docker','start', f'{container_name}'], text=True)
-
         return True 
     
     except subprocess.CalledProcessError as e:

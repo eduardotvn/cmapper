@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog
-from .buttons.mainFuncs import filter_db, load_tables
+from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from db.connection.tableHandlers import check_tables
 
@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
         self.Columns.setObjectName("Columns")
 
         self.Tables = QtWidgets.QComboBox(self.VisualizationGB)
-        self.Tables.setGeometry(QtCore.QRect(510, 5, 231, 41))
+        self.Tables.setGeometry(QtCore.QRect(540, 5, 231, 41))
         self.Tables.setObjectName("Tables")
         self.Tables.currentIndexChanged.connect(self.set_current_table)
 
@@ -161,31 +161,29 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
-
-        self.set_tables()
-
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     
     def set_container_data(self, containers : list):
+        if len(containers) == 0:
+            return 
         self.current_container = containers[0].split()[-1]
         self.found_containers = [name.split()[-1] for name in containers] 
-
-        print(self.found_containers)
-
         self.run_chosen_container()
+        self.set_tables()
 
     def set_tables(self):
-        tables = check_tables()
-        self.found_tables = [table[0] for table in tables]
-        print(self.found_tables)
-        self.current_table = self.found_tables[0] 
-        load_tables(self, self.found_tables)
+        try: 
+            tables = check_tables()
+            self.found_tables = [table[0] for table in tables]
+            self.current_table = self.found_tables[0] 
+            self.Tables.addItems(self.found_tables)
+        except Exception as e: 
+            print("Something went wrong while trying to set tables: ", e)
     
     def set_current_table(self):
         table = self.Tables.currentText()
         self.current_table = table
-        if self.found_containers != None: 
-            self.run_refresh()
+        self.run_refresh()
 
     def run_chosen_container(self):
         if run_container(self.current_container):
