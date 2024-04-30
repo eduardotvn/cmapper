@@ -51,9 +51,9 @@ def get_csv_info(url):
 
     return column_names, column_types, data
 
-def try_table_creation(tableName : str, url : str, username, password) -> bool: 
+def try_table_creation(tableName : str, url : str) -> bool: 
     try:
-        _, conn = start_connection(username, password)
+        _, conn = start_connection()
         cur = conn.cursor() 
 
         col_names, col_types, data = get_csv_info(url)

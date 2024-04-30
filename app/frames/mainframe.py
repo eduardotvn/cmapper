@@ -71,7 +71,7 @@ class Ui_MainWindow(object):
         self.RefreshButton.setGeometry(QtCore.QRect(390, 470, 88, 34))
         self.RefreshButton.setObjectName("RefreshButton")
         self.RefreshButton.setText("Refresh")
-        self.RefreshButton.clicked.connect(lambda: refresh_db_visualization(self, self.current_table))
+        self.RefreshButton.clicked.connect(self.run_refresh)
 
         self.VisualizationButton = QtWidgets.QPushButton(self.centralwidget)
         self.VisualizationButton.setGeometry(QtCore.QRect(50, 20, 91, 91))
@@ -174,11 +174,17 @@ class Ui_MainWindow(object):
     def set_tables(self):
         try: 
             tables = check_tables()
+            if len(tables) == 0:
+                return 
+            self.Tables.currentIndexChanged.disconnect(self.set_current_table)
             self.found_tables = [table[0] for table in tables]
             self.current_table = self.found_tables[0] 
+            self.Tables.clear()
             self.Tables.addItems(self.found_tables)
+            self.Tables.currentIndexChanged.connect(self.set_current_table)
         except Exception as e: 
             print("Something went wrong while trying to set tables: ", e)
+            self.Tables.currentIndexChanged.connect(self.set_current_table)
     
     def set_current_table(self):
         table = self.Tables.currentText()
@@ -192,7 +198,11 @@ class Ui_MainWindow(object):
             print("Something went wrong")
 
     def run_refresh(self):
-        refresh_db_visualization(self, self.current_table)
+        tables = [table[0] for table in check_tables()] 
+        if self.current_table in tables:
+            refresh_db_visualization(self, self.current_table)
+        else: 
+            self.set_tables()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

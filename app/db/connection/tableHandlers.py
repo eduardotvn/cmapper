@@ -12,7 +12,6 @@ def check_tables() -> list:
         cur.close()
         conn.close()
 
-        print(existing_tables)
         return existing_tables
     except Exception as e:
         print("Error while checking tables :", e)

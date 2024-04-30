@@ -73,8 +73,8 @@ class Ui_CreateDatabaseFromFile(object):
         if self.chosen_file is not None:
             try_table_creation(dbname, self.chosen_file)
             self.chosen_file = None
-            self.main_window.current_db = dbname
             self.main_window.run_refresh()
+            self.main_window.set_tables()
             CreateDatabaseFromFile.close()
     
     def retranslateUi(self, CreateDatabaseFromFile):

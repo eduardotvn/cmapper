@@ -11,6 +11,9 @@ def refresh_db_visualization(self, tableName):
 
     if self.current_container == None: 
         return 
+    
+    if tableName == None or tableName == "":
+        return 
 
     data, header = select_all_rows(tableName)
 
