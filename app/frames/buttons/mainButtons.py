@@ -3,6 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from .mainFuncs import load_columns
 from frames.dialogs.createDbDialog import Ui_CreateDatabaseFromFile
 from frames.dialogs.chooseContainer import Ui_ChooseContainer
+from frames.dialogs.formatErrorDialog import Ui_FormatError
 
 def refresh_db_visualization(self, tableName):
 
@@ -50,3 +51,9 @@ def run_choose_container_dialog(self):
     self.Choose_Container.main_window = self
     self.Choose_Container_Dialog.show()
     self.Choose_Container.set_containers_options(self.found_containers)
+
+def run_format_error_dialog(self):
+    self.FormatError_Dialog = QtWidgets.QDialog()
+    self.FEDialog = Ui_FormatError()
+    self.FEDialog.setupUi(self.FormatError_Dialog)
+    self.FormatError_Dialog.show()

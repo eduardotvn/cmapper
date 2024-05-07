@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
 from docker.findcontainers import find_running_postgres_containers
 from .mainframe import Ui_MainWindow
+from .dialogs.warningDocker import Ui_WarningDocker
 import time 
 
 class OpenFrame(QMainWindow):
@@ -38,6 +39,11 @@ class OpenFrame(QMainWindow):
             self.main = Ui_MainWindow()
             self.main.setupUi(self.MainWindow)
             self.MainWindow.show()
+            if len(find_running_postgres_containers()) == 0:
+                self.warningDialog = QtWidgets.QDialog()
+                self.warning = Ui_WarningDocker()
+                self.warning.setupUi(self.warningDialog)
+                self.warningDialog.show()
             self.main.set_container_data(find_running_postgres_containers())
             self.close()
         except Exception as e:

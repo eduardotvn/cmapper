@@ -62,12 +62,18 @@ class Ui_CreateDatabaseFromFile(object):
         current_text = self.DBNameInput.text()
         if current_text.strip() == "":
             return False, ""
+        elif current_text.strip().isdigit():
+            return False, ""
         else: 
             current_text = ''.join([c if c !=' ' else '_' for c in current_text.strip()])
             return True, current_text
     
     def table_creation(self, CreateDatabaseFromFile):
+        from frames.buttons.mainButtons import run_format_error_dialog
         con, dbname = self.get_db_name()
+        if dbname in self.main_window.found_tables or dbname == "":
+            run_format_error_dialog(self)
+            return 
         if not con: 
             return 
         if self.chosen_file is not None:

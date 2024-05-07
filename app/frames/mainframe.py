@@ -7,8 +7,8 @@ from db.connection.tableHandlers import check_tables
 class Ui_MainWindow(object):
     def __init__(self): 
         self.current_table = None 
-        self.found_tables = None
-        self.found_containers = None 
+        self.found_tables = []
+        self.found_containers = []
         self.current_container = None 
 
     def setupUi(self, MainWindow):

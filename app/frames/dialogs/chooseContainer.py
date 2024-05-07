@@ -28,7 +28,7 @@ class Ui_ChooseContainer(object):
         self.okButton = QtWidgets.QPushButton(self.groupBox)
         self.okButton.setGeometry(QtCore.QRect(10, 120, 71, 34))
         self.okButton.setObjectName("okButton")
-        self.okButton.clicked.connect(self.set_container)
+        self.okButton.clicked.connect(lambda: self.set_container(Dialog))
 
         self.cancelButton = QtWidgets.QPushButton(self.groupBox)
         self.cancelButton.setGeometry(QtCore.QRect(400, 120, 81, 34))
@@ -60,10 +60,10 @@ class Ui_ChooseContainer(object):
         self.containerCombobox.addItems(options)
         self.containers = options
 
-    def set_container(self):
+    def set_container(self, dialog):
         chosen = self.containerCombobox.currentText()
         self.main_window.current_container = chosen
-        self.close()
+        dialog.close()
 
     def create_original(self):
         if "postgrescmapper" in self.containers:
