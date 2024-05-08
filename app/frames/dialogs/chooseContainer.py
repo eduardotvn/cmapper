@@ -1,6 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from docker.startlocalcontainer import *
-from .setContainerCredentials import Ui_setContainerCredentials
 from .warningContainerExists import Ui_ContainerExistsDialog
 
 class Ui_ChooseContainer(object):
@@ -42,7 +41,7 @@ class Ui_ChooseContainer(object):
         self.createAndRunButton = QtWidgets.QPushButton(self.groupBox)
         self.createAndRunButton.setGeometry(QtCore.QRect(150, 70, 201, 31))
         self.createAndRunButton.setObjectName("createAndRunButton")
-        self.createAndRunButton.clicked.connect(self.create_original)
+        self.createAndRunButton.clicked.connect(lambda: self.create_original(Dialog))
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -65,18 +64,17 @@ class Ui_ChooseContainer(object):
         self.main_window.current_container = chosen
         dialog.close()
 
-    def create_original(self):
+    def create_original(self, dialog):
         if "postgrescmapper" in self.containers:
             self.Warning_Dialog = QtWidgets.QDialog()
             self.WDialog = Ui_ContainerExistsDialog()
             self.WDialog.setupUi(self.Warning_Dialog)
             self.Warning_Dialog.show()
             return
-        self.Credentials_Dialog = QtWidgets.QDialog()
-        self.CredDialog = Ui_setContainerCredentials()
-        self.CredDialog.setupUi(self.Credentials_Dialog)
-        self.Credentials_Dialog.show()
-        self.CredDialog.parent = self
+        if start_postgres_container():
+            self.main_window.current_container = "postgres_db"
+            dialog.close()
+        
 
 
 

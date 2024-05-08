@@ -1,10 +1,13 @@
 import subprocess
-from .findport import find_free_port
+import os 
 
-def start_postgres_container(name: str, password: str, user: str ):
+def start_postgres_container():
     try:
-        free_port = find_free_port()
-        subprocess.run(["sudo", "docker", "run", "--name", f"{name}", "-p", f"{free_port}:{free_port}", "-e", f"POSTGRES_USER={user}", "-e", f"POSTGRES_PASSWORD={password}", "-e", "POSTGRES_DB=postgres_db", "-d", "postgres"], check=True)
+        dbname = os.getenv('DBNAME')
+        user = os.getenv('USERNAME')
+        password = os.getenv('PASSWORD')
+        port = os.getenv('PORT')
+        subprocess.run(["sudo", "docker", "run", "--name", f"{dbname}", "-p", f"{port}:{port}", "-e", f"POSTGRES_USER={user}", "-e", f"POSTGRES_PASSWORD={password}", "-e", "POSTGRES_DB=postgres_db", "-d", "postgres"], check=True)
         return True, None  
     except subprocess.CalledProcessError as e:
         print(f"Error starting PostgreSQL container: {e}")
