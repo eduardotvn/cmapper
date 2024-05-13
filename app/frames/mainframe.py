@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from db.connection.tableHandlers import check_tables
@@ -10,6 +10,7 @@ class Ui_MainWindow(object):
         self.found_tables = []
         self.found_containers = []
         self.current_container = None 
+        self.running_feature = None
 
     def setupUi(self, MainWindow):
 
@@ -54,6 +55,7 @@ class Ui_MainWindow(object):
         self.InputDataButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.InputDataButton.setGeometry(QtCore.QRect(30, 470, 88, 34))
         self.InputDataButton.setObjectName("InputDataButton")
+        self.InputDataButton.clicked.connect(lambda: run_db_insertion_dialog(self))
 
         self.UpdateButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.UpdateButton.setGeometry(QtCore.QRect(150, 470, 88, 34))
@@ -76,10 +78,12 @@ class Ui_MainWindow(object):
         self.VisualizationButton = QtWidgets.QPushButton(self.centralwidget)
         self.VisualizationButton.setGeometry(QtCore.QRect(50, 20, 91, 91))
         self.VisualizationButton.setObjectName("VisualizationButton")
+        self.VisualizationButton.clicked.connect(lambda: self.run_feature(self.running_feature, self.VisualizationGB))
 
         self.ChartsButton = QtWidgets.QPushButton(self.centralwidget)
         self.ChartsButton.setGeometry(QtCore.QRect(50, 120, 91, 91))
         self.ChartsButton.setObjectName("ChartsButton")
+        self.ChartsButton.clicked.connect(self.VisualizationGB.hide)
 
         self.PCAButton = QtWidgets.QPushButton(self.centralwidget)
         self.PCAButton.setGeometry(QtCore.QRect(50, 220, 91, 91))
@@ -162,6 +166,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.running_feature = self.VisualizationGB
     
     def set_container_data(self, containers : list):
         if len(containers) == 0:
@@ -181,6 +187,7 @@ class Ui_MainWindow(object):
             self.current_table = self.found_tables[0] 
             self.Tables.clear()
             self.Tables.addItems(self.found_tables)
+            self.run_refresh()
             self.Tables.currentIndexChanged.connect(self.set_current_table)
         except Exception as e: 
             print("Something went wrong while trying to set tables: ", e)
@@ -203,6 +210,13 @@ class Ui_MainWindow(object):
             refresh_db_visualization(self, self.current_table)
         else: 
             self.set_tables()
+
+    def run_feature(self, running_feature, feature):
+        if running_feature is not None:
+            running_feature.hide()
+            feature.show()
+        else:
+            return 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

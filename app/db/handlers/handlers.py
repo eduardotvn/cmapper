@@ -4,27 +4,26 @@ from db.connection.connection import start_connection
 def insert_table(tableName, insertionSchema ) -> bool:
     try:
         _, conn = start_connection()
-        cursor = conn.cursor()
+        cur = conn.cursor()
 
-        cur.execute(f"""SELECT column_names FROM information_schema.columns WHERE table_name = '{tableName}'""")
-        existing_columns = cur.fetchall() 
+        existing_columns = select_all_cols(tableName) 
 
         insertion_query = f"INSERT INTO {tableName} "
-        columns = "( "
-        if existing_columns: 
-            columns += existing_columns[0][0] 
-            columns += ", ".join([f", {value[0]}" for value in existing_columns[1:]])
-        columns += " )"
+        columns = "("
+        if existing_columns:
+            columns += ", ".join(f'"{column}"' for column in existing_columns)
+            columns += ")"
 
         insertion_query += columns 
 
         query = " VALUES ("
         if insertionSchema:
-            query += insertionSchema[0]
-            query += ", ".join([f", {value}" for value in insertionSchema[1:]])
+            query += ", ".join([f'{value}' for value in insertionSchema])
         query += " )"
 
         insertion_query += query
+
+        print(insertion_query)
 
         cur.execute(insertion_query)
         conn.commit()
@@ -45,11 +44,11 @@ def select_all_cols(tableName: str ) -> list:
         cur = conn.cursor()
 
         cur.execute(f"""
-            SELECT column_name
-            FROM information_schema.columns
-            WHERE table_schema = 'public'
-            AND table_name = %s;
-        """, (tableName,))
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = '{tableName}'
+            ORDER BY ORDINAL_POSITION;
+        """)
         headers = [row[0] for row in cur.fetchall()]
 
         cur.close()
@@ -58,7 +57,29 @@ def select_all_cols(tableName: str ) -> list:
     except psycopg2.Error as e:
         return []
 
+def select_all_cols_and_types(tableName: str) -> list: 
+    try: 
+        _, conn = start_connection()
+        cur = conn.cursor()
 
+        cur.execute(f"""
+            SELECT COLUMN_NAME, DATA_TYPE
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = '{tableName}'
+            ORDER BY ORDINAL_POSITION;
+        """)
+        
+        columns_info = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return columns_info
+    except psycopg2.Error as e:
+        print(f"Error: {e}")
+        return []
+
+        
 def select_all_rows(tableName ) -> list:
     try: 
         _, conn = start_connection() 

@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 def load_columns(self, tableName: str):
     try:  
         cols = select_all_cols(tableName)
+        self.Columns.clear()
         self.Columns.addItems(cols)
     except Exception as e: 
         print(e)
