@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PrimaryKeyConfirm</class>
+ <widget class="QDialog" name="PrimaryKeyConfirm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>429</width>
+    <height>91</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Confirm Primary Key</string>
+  </property>
+  <widget class="QPushButton" name="yesButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>88</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Yes</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="searchAgainButton">
+   <property name="geometry">
+    <rect>
+     <x>327</x>
+     <y>50</y>
+     <width>91</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Search Again</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ConfirmKeyLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>9</y>
+     <width>411</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Do you agree with turning {Column Name} into primary key? </string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

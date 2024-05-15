@@ -4,6 +4,7 @@ import csv
 from db.connection.connection import start_connection
 from db.connection.tableHandlers import create_table
 from db.fileHandling.typechecker.checker import sqlTypeReturn, convert_to_iso_date
+from db.handlers.handlers import select_all_cols
 from dateutil.parser import parse
 
 def is_date(string):
@@ -86,4 +87,56 @@ def try_table_creation(tableName : str, url : str) -> bool:
     except psycopg2.Error as e:
         raise psycopg2.Error(f"{e}")
         return False 
-    
+
+
+def search_primary_key(tableName: str):
+    try:
+        _, conn = start_connection()
+        cur = conn.cursor() 
+
+        all_cols = select_all_cols(tableName)
+        candidates = []
+
+        for col in all_cols: 
+            query = (f"""
+            SELECT 
+            CASE 
+                WHEN COUNT(*) = COUNT(DISTINCT "{col}") THEN 'yes'
+                ELSE 'no'
+            END AS result
+            FROM {tableName};
+            """)
+
+            cur.execute(query)
+            result = cur.fetchall()
+            print(result)
+            if result[0][0] == 'yes':
+                candidates.append(col)
+            
+        cur.close()
+        conn.close()
+        return candidates
+        
+    except psycopg2.Error as e:
+        return 
+
+def turn_column_into_primary_key(tableName, column):
+    try:
+        _, conn = start_connection()
+        cur = conn.cursor() 
+
+        query = (f"""
+        ALTER TABLE {tableName}
+        ADD PRIMARY KEY ("{column}");
+        """)
+
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return True
+
+    except psycopg2.Error as e: 
+        print(e)
+        return False 

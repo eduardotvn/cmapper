@@ -7,6 +7,11 @@ def insert_table(tableName, insertionSchema ) -> bool:
         cur = conn.cursor()
 
         existing_columns = select_all_cols(tableName) 
+        pkey = find_primary_key_column(tableName)
+        if len(pkey) > 0:
+            existing_columns.remove(pkey[0])
+
+        print(pkey)
 
         insertion_query = f"INSERT INTO {tableName} "
         columns = "("
@@ -125,4 +130,51 @@ def delete_row(tableName, identifier ) -> bool:
         return True 
     except psycopg2.Error as e: 
         raise psycopg2.Error(f"{e}")
+        return False 
+
+def find_primary_key_column(tablename): 
+    try: 
+        _, conn = start_connection()
+        cur = conn.cursor()
+
+        query = f"""
+        SELECT c.column_name
+        FROM information_schema.table_constraints tc 
+        JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) 
+        JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema
+        AND tc.table_name = c.table_name AND ccu.column_name = c.column_name
+        WHERE constraint_type = 'PRIMARY KEY' and tc.table_name = '{tablename}';
+        """
+
+        cur.execute(query)
+        col = cur.fetchall()
+        print("cols: ", col)
+
+        cur.close()
+        conn.close()  
+        return [row[0] for row in col]
+
+    except psycopg2.Error as e: 
+        print(e)
+        return []
+
+def create_new_pkey(tableName): 
+    try:
+        _, conn = start_connection()
+        cur = conn.cursor()
+
+        query = f"""
+        ALTER TABLE {tableName}
+        ADD COLUMN pkey SERIAL PRIMARY KEY;
+        SELECT setval(pg_get_serial_sequence('{tableName}', 'pkey'), 1, false);
+        """
+
+        cur.execute(query)
+        conn.commit()
+
+        cur.close()
+        conn.close()
+        return True 
+    except psycopg2.Error as e:
+        print(e)
         return False 

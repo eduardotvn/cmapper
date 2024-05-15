@@ -1,10 +1,10 @@
-from db.handlers.handlers import select_all_rows, select_all_cols_and_types
+from db.handlers.handlers import select_all_rows, select_all_cols_and_types, find_primary_key_column
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .mainFuncs import load_columns
 from frames.dialogs.createDbDialog import Ui_CreateDatabaseFromFile
 from frames.dialogs.chooseContainer import Ui_ChooseContainer
 from frames.dialogs.formatErrorDialog import Ui_FormatError
-from frames.dialogs.inputDataDialog import Ui_InputData
+from frames.dialogs.dbHandlers.inputDataDialog import Ui_InputData
 
 def refresh_db_visualization(self, tableName):
 
@@ -36,17 +36,26 @@ def refresh_db_visualization(self, tableName):
 
 
 def run_db_insertion_dialog(self):
-    chosen_table = self.current_table
+    try:
+        chosen_table = self.current_table
 
-    self.InputData_Dialog = QtWidgets.QDialog()
-    self.InputData = Ui_InputData()
-    self.InputData.setupUi(self.InputData_Dialog)
-    self.InputData_Dialog.show()
+        self.InputData_Dialog = QtWidgets.QDialog()
+        self.InputData = Ui_InputData()
+        self.InputData.setupUi(self.InputData_Dialog)
+        self.InputData_Dialog.show()
 
-    cols_info = select_all_cols_and_types(chosen_table)
-    self.InputData.cols_info = cols_info
-    self.InputData.chosen_table = chosen_table
-    self.InputData.set_column_name(cols_info[0][0])
+        cols_info = select_all_cols_and_types(chosen_table)
+        pkey = find_primary_key_column(chosen_table)
+        if len(pkey) > 0:
+            for col in cols_info:
+                if col[0] == pkey[0]:
+                    cols_info.remove(col)
+        self.InputData.cols_info = cols_info
+        self.InputData.chosen_table = chosen_table
+        self.InputData.set_column_name(cols_info[0][0])
+    except Exception as e: 
+        print(e)
+        return
 
 def run_creation_dialog(self):
     self.Creatrion_Dialog = QtWidgets.QDialog()

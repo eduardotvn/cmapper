@@ -168,7 +168,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.running_feature = self.VisualizationGB
-    
+
     def set_container_data(self, containers : list):
         if len(containers) == 0:
             return 
