@@ -17,14 +17,14 @@ def check_tables() -> list:
         print("Error while checking tables :", e)
         return []
 
-def create_table(tableName, tableSchema, ) -> bool: 
+def create_table(tableName, tableSchema) -> bool: 
     try: 
         _, conn = start_connection() 
         cur = conn.cursor() 
 
         creation_order = "CREATE TABLE IF NOT EXISTS " + tableName
 
-        schema = "(id SERIAL PRIMARY KEY "
+        schema = "(id SERIAL PRIMARY KEY ,"
         if tableSchema:
             schema += ", ".join([f"{column} {dtype}" for column, dtype in tableSchema])
         schema += ")"

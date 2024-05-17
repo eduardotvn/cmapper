@@ -95,3 +95,4 @@ def run_create_table_dialog(self):
     self.CTDialog = Ui_CreateTableDialog()
     self.CTDialog.setupUi(self.CreateTable_Dialog)
     self.CreateTable_Dialog.show()
+    self.CTDialog.parent = self 
