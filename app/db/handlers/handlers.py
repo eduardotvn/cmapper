@@ -121,10 +121,12 @@ def delete_row(tableName, identifier ) -> bool:
         _, conn = start_connection()
         cur = conn.cursor()
 
-        query = f"DELETE FROM {table_name} WHERE {condition_column} = ?"
-        cur.execute(query, (identifier,))
+        col = find_primary_key_column(tableName)[0]
 
-        conn.comit() 
+        query = f"DELETE FROM {tableName} WHERE {col} = {identifier}"
+        cur.execute(query)
+
+        conn.commit() 
         cur.close()
         conn.close()
         return True 
