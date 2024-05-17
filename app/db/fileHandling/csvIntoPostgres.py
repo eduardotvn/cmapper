@@ -3,7 +3,7 @@ from psycopg2 import sql
 import csv
 from db.connection.connection import start_connection
 from db.connection.tableHandlers import create_table
-from db.fileHandling.typechecker.checker import sqlTypeReturn, convert_to_iso_date
+from db.fileHandling.typechecker.checker import sqlTypeReturn, convert_to_iso_timestamp
 from db.handlers.handlers import select_all_cols
 from dateutil.parser import parse
 
@@ -46,8 +46,8 @@ def get_csv_info(url):
         data = []
         for row in reader:
             for index, value in enumerate(row):
-                if sqlTypeReturn(value) == "DATE":
-                    row[index] = convert_to_iso_date(value)
+                if sqlTypeReturn(value) == "TIMESTAMP":
+                    row[index] = convert_to_iso_timestamp(value)
             data.append(row)
 
     return column_names, column_types, data
@@ -123,20 +123,29 @@ def search_primary_key(tableName: str):
 def turn_column_into_primary_key(tableName, column):
     try:
         _, conn = start_connection()
-        cur = conn.cursor() 
+        cur = conn.cursor()
 
-        query = (f"""
+        cur.execute(f"""SELECT MAX("{column}") FROM {tableName}""")
+        max_value = cur.fetchone()[0]
+
+        starting_value = max_value + 1 if max_value is not None else 1
+
+        query = f"""
         ALTER TABLE {tableName}
         ADD PRIMARY KEY ("{column}");
-        """)
-
+        """
         cur.execute(query)
+
+        cur.execute(f"""CREATE SEQUENCE pkey_seq OWNED BY {tableName}."{column}";
+                        SELECT setval('pkey_seq', coalesce(max("{column}"), 0) + 1, false) FROM {tableName};
+                        ALTER TABLE {tableName} ALTER COLUMN "{column}" SET DEFAULT nextval('pkey_seq')""")
+
         conn.commit()
         cur.close()
         conn.close()
 
         return True
 
-    except psycopg2.Error as e: 
+    except psycopg2.Error as e:
         print(e)
-        return False 
+        return False

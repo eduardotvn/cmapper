@@ -1,14 +1,18 @@
 from dateutil.parser import parse
 from datetime import datetime
 
-def convert_to_iso_date(date_str):
+def convert_to_iso_timestamp(datetime_str):
     try:
-        parsed_date = datetime.strptime(date_str, "%d-%m-%Y")
-        iso_date = parsed_date.strftime("%Y-%m-%d")
-        return iso_date
+        parsed_datetime = datetime.strptime(datetime_str, "%d-%m-%Y %H:%M:%S")
+        iso_timestamp = parsed_datetime.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
-        return None
-
+        try:
+            parsed_datetime = datetime.strptime(datetime_str, "%d-%m-%Y")
+            iso_timestamp = parsed_datetime.strftime("%Y-%m-%d")
+        except ValueError:
+            return None
+    return iso_timestamp
+        
 def is_date(string):
     try:
         parse(string)
@@ -31,7 +35,7 @@ def sqlTypeReturn(v) -> str:
     if v.isdigit():
         return "INTEGER"
     elif is_date(v):
-        return "DATE"
+        return "TIMESTAMP"
     elif is_float(v):
         return "REAL"
     elif is_bool(v): 
