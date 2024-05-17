@@ -7,6 +7,7 @@ from frames.dialogs.formatErrorDialog import Ui_FormatError
 from frames.dialogs.dbHandlers.inputDataDialog import Ui_InputData
 from frames.dialogs.dbHandlers.deleteRowDialog import Ui_DeleteDialog
 from frames.dialogs.dbHandlers.createTableDialog import Ui_CreateTableDialog
+from frames.dialogs.dbHandlers.confirmDeleteDialog import Ui_ConfirmDeleteDialog
 
 def refresh_db_visualization(self, tableName):
 
@@ -96,3 +97,12 @@ def run_create_table_dialog(self):
     self.CTDialog.setupUi(self.CreateTable_Dialog)
     self.CreateTable_Dialog.show()
     self.CTDialog.parent = self 
+
+def run_delete_db_dialog(self):
+    self.ConfirmDeleteDialog = QtWidgets.QDialog()
+    self.CDDialog = Ui_ConfirmDeleteDialog()
+    self.CDDialog.setupUi(self.ConfirmDeleteDialog)
+    self.ConfirmDeleteDialog.show()
+    self.CDDialog.chosen_table = self.current_table
+    self.CDDialog.set_label_name()
+    self.CDDialog.parent = self 

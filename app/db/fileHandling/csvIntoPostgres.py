@@ -136,9 +136,9 @@ def turn_column_into_primary_key(tableName, column):
         """
         cur.execute(query)
 
-        cur.execute(f"""CREATE SEQUENCE pkey_seq OWNED BY {tableName}."{column}";
-                        SELECT setval('pkey_seq', coalesce(max("{column}"), 0) + 1, false) FROM {tableName};
-                        ALTER TABLE {tableName} ALTER COLUMN "{column}" SET DEFAULT nextval('pkey_seq')""")
+        cur.execute(f"""CREATE SEQUENCE {tableName}_pkey_seq OWNED BY {tableName}."{column}";
+                        SELECT setval('{tableName}_pkey_seq', coalesce(max("{column}"), 0) + 1, false) FROM {tableName};
+                        ALTER TABLE {tableName} ALTER COLUMN "{column}" SET DEFAULT nextval('{tableName}_pkey_seq')""")
 
         conn.commit()
         cur.close()

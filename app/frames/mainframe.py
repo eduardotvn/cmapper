@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from db.connection.tableHandlers import check_tables
@@ -66,9 +66,10 @@ class Ui_MainWindow(object):
         self.DeleteButton.setObjectName("DeleteButton")
         self.DeleteButton.clicked.connect(lambda: run_delete_row_dialog(self))
         
-        self.AlterDBButton = QtWidgets.QPushButton(self.VisualizationGB)
-        self.AlterDBButton.setGeometry(QtCore.QRect(670, 470, 121, 34))
-        self.AlterDBButton.setObjectName("AlterDBButton")
+        self.DeleteDBButton = QtWidgets.QPushButton(self.VisualizationGB)
+        self.DeleteDBButton.setGeometry(QtCore.QRect(670, 470, 121, 34))
+        self.DeleteDBButton.setObjectName("DeleteDBButton")
+        self.DeleteDBButton.clicked.connect(lambda: run_delete_db_dialog(self))
 
         self.RefreshButton = QtWidgets.QPushButton(self.VisualizationGB)
         self.RefreshButton.setGeometry(QtCore.QRect(390, 470, 88, 34))
@@ -233,7 +234,7 @@ class Ui_MainWindow(object):
         self.InputDataButton.setText(_translate("MainWindow", "Input"))
         self.UpdateButton.setText(_translate("MainWindow", "Update"))
         self.DeleteButton.setText(_translate("MainWindow", "Delete"))
-        self.AlterDBButton.setText(_translate("MainWindow", "Alter Database"))
+        self.DeleteDBButton.setText(_translate("MainWindow", "Delete Database"))
         self.RefreshButton.setText(_translate("MainWindow", "Refresh"))
         self.VisualizationButton.setText(_translate("MainWindow", "Visualization"))
         self.ChartsButton.setText(_translate("MainWindow", "Charts"))
