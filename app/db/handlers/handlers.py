@@ -39,9 +39,27 @@ def insert_table(tableName, insertionSchema ) -> bool:
         raise psycopg2.Error(f"{e}")
         return False 
 
-def update_table(tableName , updateSchema ) -> bool: 
-    #Under development
-    pass 
+def update_table(tableName, column, value, pkey) -> bool:
+    try:
+        _, conn = start_connection()
+        cur = conn.cursor()
+
+        pkey_column = find_primary_key_column(tableName)[0]
+
+        query = f"""UPDATE {tableName}
+                    SET "{column}" = %s
+                    WHERE "{pkey_column}" = %s
+                """
+
+        cur.execute(query, (value, pkey))
+        conn.commit()
+        cur.close()
+        conn.close() 
+
+        return True
+    except Exception as e:
+        print(e)
+        return False 
 
 def select_all_cols(tableName: str ) -> list: 
     try: 

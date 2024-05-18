@@ -8,6 +8,7 @@ from frames.dialogs.dbHandlers.inputDataDialog import Ui_InputData
 from frames.dialogs.dbHandlers.deleteRowDialog import Ui_DeleteDialog
 from frames.dialogs.dbHandlers.createTableDialog import Ui_CreateTableDialog
 from frames.dialogs.dbHandlers.confirmDeleteDialog import Ui_ConfirmDeleteDialog
+from frames.dialogs.dbHandlers.updateDataDialog import Ui_UpdateDataDialog
 
 def refresh_db_visualization(self, tableName):
 
@@ -88,8 +89,13 @@ def run_delete_row_dialog(self):
     self.DeleteRow_Dialog.show()
     self.DRDialog.chosen_table = self.current_table
 
-def update_row_dialog(self):
-    pass
+def run_update_row_dialog(self):
+    self.UpdateData_Dialog = QtWidgets.QDialog()
+    self.UDDialog = Ui_UpdateDataDialog()
+    self.UDDialog.chosen_table = self.current_table
+    self.UDDialog.parent = self
+    self.UDDialog.setupUi(self.UpdateData_Dialog)
+    self.UpdateData_Dialog.show()
 
 def run_create_table_dialog(self):
     self.CreateTable_Dialog = QtWidgets.QDialog()
