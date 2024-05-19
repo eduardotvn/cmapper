@@ -3,7 +3,9 @@ from utils.encodeColumn import encode_column
 
 class Ui_EncoderDialog(object):
     def __init__(self):
-        self.df = None
+        self.current_dataframe = None
+        self.parent = None 
+
     def setupUi(self, EncoderDialog):
         EncoderDialog.setObjectName("EncoderDialog")
         EncoderDialog.resize(450, 111)
@@ -40,7 +42,9 @@ class Ui_EncoderDialog(object):
     def encode_column(self, EncoderDialog):
         col = self.ColumnOptions.currentText()
         encoder = self.EncoderOptions.currentText()
-        encode_column(self.df, col, encoder)
+        self.current_dataframe = encode_column(self.df, col, encoder)
+        self.parent.current_dataframe = self.current_dataframe
+        EncoderDialog.close()
 
     def set_options(self, cols):
         self.EncoderOptions.addItems(encoder_options)

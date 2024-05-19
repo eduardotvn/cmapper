@@ -4,6 +4,8 @@ from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from db.connection.tableHandlers import check_tables
 from frames.mainframe_features.CorrelationMatrix.correlation_matrix import load_corr_matrix_visualization
+from utils.datasetInfo import turn_db_into_dataframe
+from io import StringIO
 
 class Ui_MainWindow(object):
     def __init__(self): 
@@ -228,6 +230,28 @@ class Ui_MainWindow(object):
             feature.show()
         else:
             return 
+    def set_dataframe_table(self):
+        self.current_table = self.tablesOptions.currentText()
+        self.refresh_df_info()
+
+    def refresh_df_info(self):
+        self.textEdit.setReadOnly(False)
+
+        df = turn_db_into_dataframe(self.current_table)
+        buffer = StringIO()
+        df.info(buf=buffer)
+        info_str = buffer.getvalue()
+        info_str = info_str.replace("<class 'pandas.core.frame.DataFrame'>\n", "")
+        self.textEdit.setText(info_str)
+
+        self.textEdit.setReadOnly(True)
+        self.current_dataframe = df
+        self.set_current_dataframe_info()
+
+    def set_current_dataframe_info(self):
+        if self.current_dataframe is not None: 
+            cols = self.current_dataframe.columns.tolist()
+            self.DFInfoText.setText(f"Current columns: {cols}, TOTAL: {len(cols)}")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
