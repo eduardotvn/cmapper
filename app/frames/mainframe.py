@@ -3,6 +3,7 @@ from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, 
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from db.connection.tableHandlers import check_tables
+from frames.mainframe_features.CorrelationMatrix.correlation_matrix import load_corr_matrix_visualization
 
 class Ui_MainWindow(object):
     def __init__(self): 
@@ -11,6 +12,7 @@ class Ui_MainWindow(object):
         self.found_containers = []
         self.current_container = None 
         self.running_feature = None
+        self.current_dataframe = None 
 
     def setupUi(self, MainWindow):
 
@@ -95,6 +97,7 @@ class Ui_MainWindow(object):
         self.CorrelationButton = QtWidgets.QPushButton(self.centralwidget)
         self.CorrelationButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
         self.CorrelationButton.setObjectName("CorrelationButton")
+        self.CorrelationButton.clicked.connect(lambda: load_corr_matrix_visualization(self, MainWindow))
 
         self.OtherButton = QtWidgets.QPushButton(self.centralwidget)
         self.OtherButton.setGeometry(QtCore.QRect(50, 420, 91, 91))
