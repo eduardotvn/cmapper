@@ -54,4 +54,4 @@ class Ui_EncoderDialog(object):
         self.EncodeButton.setText(_translate("EncoderDialog", "Encode"))
         self.CancelButton.setText(_translate("EncoderDialog", "Cancel"))
 
-encoder_options = ["One-Hot Encoder", "Label Encoder", "Ordinal Encoder", "Binary Encoder", "Target Encoder", "Count Encoder", "Hashing Encoder", "Frequency Encoder"]
+encoder_options = ["One-Hot Encoder", "Label Encoder", "Ordinal Encoder"]
