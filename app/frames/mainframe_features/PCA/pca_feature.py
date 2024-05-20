@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from .tabsButtons.PCA.loadPCAButtons import load_pca_buttons
 
 def load_pca_visualization(self, parent):
     self.running_feature.hide()
@@ -16,6 +17,18 @@ def load_pca_visualization(self, parent):
     self.pcaDataframeInfo = QtWidgets.QTextEdit(self.PCAGB)
     self.pcaDataframeInfo.setGeometry(QtCore.QRect(5, 50, 801, 121))
     self.pcaDataframeInfo.setText(self.current_dataframe.describe().to_string())
+
+    self.DimensionReductionTabs = QtWidgets.QTabWidget(self.PCAGB)
+    self.DimensionReductionTabs.setGeometry(QtCore.QRect(5, 191, 800, 320))
+
+    self.tab_pca = QtWidgets.QWidget()
+    self.tab_lda = QtWidgets.QWidget()
+    self.tab_tsne = QtWidgets.QWidget()
+    self.DimensionReductionTabs.addTab(self.tab_pca, "PCA")
+    self.DimensionReductionTabs.addTab(self.tab_lda, "LDA")
+    self.DimensionReductionTabs.addTab(self.tab_tsne, "t-SNE")
+
+    load_pca_buttons(self, self.tab_pca)
 
     self.running_feature = self.PCAGB
     self.running_feature.show()
