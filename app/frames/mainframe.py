@@ -3,7 +3,8 @@ from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, 
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from db.connection.tableHandlers import check_tables
-from frames.mainframe_features.CorrelationMatrix.correlation_matrix import load_corr_matrix_visualization
+from frames.mainframe_features.CorrelationMatrix.correlation_matrix_feature import load_corr_matrix_visualization
+from frames.mainframe_features.PCA.pca_feature import load_pca_visualization
 from utils.datasetInfo import turn_db_into_dataframe
 from io import StringIO
 
@@ -87,19 +88,20 @@ class Ui_MainWindow(object):
         self.VisualizationButton.setObjectName("VisualizationButton")
         self.VisualizationButton.clicked.connect(lambda: self.run_feature(self.running_feature, self.VisualizationGB))
 
+        self.CorrelationButton = QtWidgets.QPushButton(self.centralwidget)
+        self.CorrelationButton.setGeometry(QtCore.QRect(50, 120, 91, 91))
+        self.CorrelationButton.setObjectName("CorrelationButton")
+        self.CorrelationButton.clicked.connect(lambda: load_corr_matrix_visualization(self, MainWindow))
+
         self.ChartsButton = QtWidgets.QPushButton(self.centralwidget)
-        self.ChartsButton.setGeometry(QtCore.QRect(50, 120, 91, 91))
+        self.ChartsButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
         self.ChartsButton.setObjectName("ChartsButton")
         self.ChartsButton.clicked.connect(self.VisualizationGB.hide)
 
         self.PCAButton = QtWidgets.QPushButton(self.centralwidget)
         self.PCAButton.setGeometry(QtCore.QRect(50, 220, 91, 91))
         self.PCAButton.setObjectName("PCAButton")
-
-        self.CorrelationButton = QtWidgets.QPushButton(self.centralwidget)
-        self.CorrelationButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
-        self.CorrelationButton.setObjectName("CorrelationButton")
-        self.CorrelationButton.clicked.connect(lambda: load_corr_matrix_visualization(self, MainWindow))
+        self.PCAButton.clicked.connect(lambda: load_pca_visualization(self, MainWindow))
 
         self.OtherButton = QtWidgets.QPushButton(self.centralwidget)
         self.OtherButton.setGeometry(QtCore.QRect(50, 420, 91, 91))
@@ -233,6 +235,9 @@ class Ui_MainWindow(object):
     def set_dataframe_table(self):
         self.current_table = self.tablesOptions.currentText()
         self.refresh_df_info()
+
+    def set_dataframe(self):
+        self.current_dataframe = turn_db_into_dataframe(self.current_table)
 
     def refresh_df_info(self):
         self.textEdit.setReadOnly(False)

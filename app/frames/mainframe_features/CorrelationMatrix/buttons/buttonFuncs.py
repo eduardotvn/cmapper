@@ -25,6 +25,7 @@ def run_drop_column_dialog(self):
 
 def run_correlation_matrix_dialog(self):
     if self.current_dataframe is not None:
-        df_corr = self.current_dataframe.corr()
+        df = self.current_dataframe.dropna()
+        df_corr = df.corr()
         self.dialog = CorrelationMatrixDialog(df_corr)
         self.dialog.exec_()
