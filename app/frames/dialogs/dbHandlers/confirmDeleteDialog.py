@@ -34,7 +34,7 @@ class Ui_ConfirmDeleteDialog(object):
             self.parent.set_tables()
             ConfirmDeleteDialog.close()
         except Exception as e:
-            QMessageBox(ConfirmDeleteDialog, "Error", f"{str(e)}")
+            QMessageBox.warning(ConfirmDeleteDialog, "Error", f"{str(e)}")
 
     def set_label_name(self):
         self.ConfirmLabel.setText(f"Are you sure you want to delete {self.chosen_table}? \n""This action cannot be undone.")

@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
+from PyQt5.QtWidgets import QTableWidgetItem
 from db.connection.tableHandlers import check_tables
 from frames.mainframe_features.CorrelationMatrix.correlation_matrix_feature import load_corr_matrix_visualization
 from frames.mainframe_features.PCA.pca_feature import load_pca_visualization
@@ -15,7 +16,9 @@ class Ui_MainWindow(object):
         self.found_containers = []
         self.current_container = None 
         self.running_feature = None
-        self.current_dataframe = None 
+        self.current_dataframe = None
+        self.processed_dataframe = None  
+        self.processed_dataframe_type = None
 
     def setupUi(self, MainWindow):
 
@@ -183,6 +186,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.running_feature = self.VisualizationGB
+        self.window = MainWindow
 
     def set_container_data(self, containers : list):
         if len(containers) == 0:
@@ -251,12 +255,26 @@ class Ui_MainWindow(object):
 
         self.textEdit.setReadOnly(True)
         self.current_dataframe = df
+        self.processed_dataframe = None
+        self.processed_dataframe_type = None
         self.set_current_dataframe_info()
 
     def set_current_dataframe_info(self):
         if self.current_dataframe is not None: 
             cols = self.current_dataframe.columns.tolist()
             self.DFInfoText.setText(f"Current columns: {cols}, TOTAL: {len(cols)}")
+
+    def populate_pca_table(self):
+        if self.processed_dataframe is not None and self.processed_dataframe_type == "pca":
+            df = self.processed_dataframe.copy()
+            self.PCAInfoData.clearContents()
+            self.PCAInfoData.setRowCount(df.shape[0]) 
+            self.PCAInfoData.setColumnCount(df.shape[1])  
+
+            for i in range(df.shape[0]):  
+                for j in range(df.shape[1]): 
+                    item = QTableWidgetItem(str(df.iloc[i, j]))  
+                    self.PCAInfoData.setItem(i, j, item)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

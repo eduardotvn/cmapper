@@ -16,7 +16,8 @@ def load_pca_visualization(self, parent):
 
     self.pcaDataframeInfo = QtWidgets.QTextEdit(self.PCAGB)
     self.pcaDataframeInfo.setGeometry(QtCore.QRect(5, 50, 801, 121))
-    self.pcaDataframeInfo.setText(self.current_dataframe.describe().to_string())
+    self.pcaDataframeInfo.setText(dataframe_info(self))
+    self.pcaDataframeInfo.setStyleSheet("border: 1px solid black;")
 
     self.DimensionReductionTabs = QtWidgets.QTabWidget(self.PCAGB)
     self.DimensionReductionTabs.setGeometry(QtCore.QRect(5, 191, 800, 320))
@@ -32,3 +33,11 @@ def load_pca_visualization(self, parent):
 
     self.running_feature = self.PCAGB
     self.running_feature.show()
+
+def dataframe_info(self):
+    cols = "Columns: " + f"{self.current_dataframe.columns.tolist()}" + "\n\n"
+    na_counts_per_row = self.current_dataframe.isna().any(axis=1).sum()
+    total_na_rows = self.current_dataframe.isna().sum().sum()
+    info = f"This dataframe contains: {total_na_rows} missing values, in a total of {na_counts_per_row} rows"
+    
+    return cols + info 
