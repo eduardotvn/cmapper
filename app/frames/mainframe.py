@@ -268,16 +268,20 @@ class Ui_MainWindow(object):
             self.DFInfoText.setText(f"Current columns: {cols}, TOTAL: {len(cols)}")
 
     def populate_pca_table(self):
-        if self.processed_dataframe is not None and self.processed_dataframe_type == "pca":
-            df = self.processed_dataframe.copy()
-            self.PCAInfoData.clearContents()
-            self.PCAInfoData.setRowCount(df.shape[0]) 
-            self.PCAInfoData.setColumnCount(df.shape[1])  
+        if self.processed_dataframe_type == "pca":
+            target = self.PCAInfoData
+        elif self.processed_dataframe_type == "LDA":
+            target = self.LDAInfoData
 
-            for i in range(df.shape[0]):  
-                for j in range(df.shape[1]): 
-                    item = QTableWidgetItem(str(df.iloc[i, j]))  
-                    self.PCAInfoData.setItem(i, j, item)
+        df = self.processed_dataframe.copy()
+        target.clearContents()
+        target.setRowCount(df.shape[0]) 
+        target.setColumnCount(df.shape[1])  
+
+        for i in range(df.shape[0]):  
+            for j in range(df.shape[1]): 
+                item = QTableWidgetItem(str(df.iloc[i, j]))  
+                target.setItem(i, j, item)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
