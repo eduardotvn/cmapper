@@ -16,9 +16,12 @@ class Ui_MainWindow(object):
         self.found_containers = []
         self.current_container = None 
         self.running_feature = None
+
         self.current_dataframe = None
-        self.processed_dataframe = None  
+        self.processed_dataframe = None
+        self.clusterized_dataframe = None  
         self.processed_dataframe_type = None
+        self.clusterized_dataframe_type = None 
 
     def setupUi(self, MainWindow):
 
