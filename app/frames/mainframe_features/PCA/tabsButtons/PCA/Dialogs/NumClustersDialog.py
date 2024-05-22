@@ -42,7 +42,7 @@ class Ui_ClustersDialog(object):
 
 
     def display_elbow_method(self):
-        if self.parent.processed_dataframe is not None and self.parent.processed_dataframe_type == "pca":
+        if self.parent.processed_dataframe_type == "PCA":
             df = self.parent.processed_dataframe.copy()
             wcss, k = elbow_method(df)
             
@@ -53,7 +53,7 @@ class Ui_ClustersDialog(object):
             self.elbow_plot_widget.show()
             
     def generate_button(self, window):
-        if self.parent.processed_dataframe is not None and self.parent.processed_dataframe_type == "pca":
+        if self.parent.processed_dataframe_type == "PCA":
             num_clusters = self.NumClustersInput.text()
             if num_clusters == '':
                 QMessageBox.warning(self.parent.window, "Invalid number", "Input a valid number of clusters")

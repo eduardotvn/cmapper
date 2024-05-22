@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem
 from utils.applyLDA import apply_lda
 from frames.buttons.mainFuncs import run_save_processed_df
+from frames.widgets.DfPlot import PlotWidget
 
 def load_LDA_buttons(self, parent):
     
@@ -50,10 +51,36 @@ def load_LDA_buttons(self, parent):
 
     self.accLabel = QtWidgets.QLabel(parent)
     self.accLabel.setGeometry(QtCore.QRect(350, 230, 250, 30))
-
+    
+    if self.processed_dataframe is not None: 
+        self.populate_pca_table()
 
 def run_plot_widget(self):
-    QMessageBox.warning(self.window, "Sorry", "I'm still under development!")
+    if self.processed_dataframe is None:
+        QMessageBox.critical(self.window, "Error", "No processed dataframe to be plotted")
+        return 
+    if 'Predictions' in self.processed_dataframe.columns:
+        if len(self.processed_dataframe.columns.tolist()) == 3:
+            labels = self.processed_dataframe['Predictions']
+            data = self.processed_dataframe.drop(columns=['Predictions'])
+            plot_widget = PlotWidget(data, labels=labels)
+        elif len(self.processed_dataframe.columns.tolist()) == 4: 
+            labels = self.processed_dataframe['Predictions']
+            data = self.processed_dataframe.drop(columns=['Predictions'])
+            plot_widget = PlotWidget(data, labels=labels, plot_type='3D')
+        else:
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            return 
+    else:
+        if len(self.processed_dataframe.columns.tolist()) == 2:
+            plot_widget = PlotWidget(self.processed_dataframe)
+        elif len(self.processed_dataframe.columns.tolist()) == 3:
+            plot_widget = PlotWidget(self.processed_dataframe, plot_type='3D')
+        else:
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            return 
+    plot_widget.exec_()
+
 
 def generate_LDA_information(self):
     target = self.targetColCB.currentText()
@@ -75,6 +102,7 @@ def generate_LDA_information(self):
         QMessageBox.critical(self.window, "Error", f"{str(err)}")
     else: 
         dataframe['Predictions'] = results
+        dataframe = dataframe.drop(columns=[target])
         self.processed_dataframe = dataframe
         self.processed_dataframe_type = "LDA"
         self.accLabel.setText(f"Accuracy: {acc:.4f}")

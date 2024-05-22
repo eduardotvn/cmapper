@@ -4,8 +4,8 @@ from utils.applyPCA import apply_pca, elbow_method
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem
 from .Dialogs.NumClustersDialog import Ui_ClustersDialog
-from .Dialogs.DfPlot import PlotWidget
 from frames.buttons.mainFuncs import run_save_processed_df
+from frames.widgets.DfPlot import PlotWidget
 
 def load_pca_buttons(self, parent):
     
@@ -50,6 +50,9 @@ def load_pca_buttons(self, parent):
 
     self.evrLabel = QtWidgets.QLabel(parent)
     self.evrLabel.setGeometry(QtCore.QRect(350, 230, 250, 30))
+    
+    if self.processed_dataframe is not None: 
+        self.populate_pca_table()
 
 def generate_pca_information(self):
     scaler = self.scalerOptions.currentText()
@@ -90,6 +93,31 @@ def run_clusters_dialog(self):
         QMessageBox.warning(self.window, "Error", "Generate a PCA dataframe before proceeding.")
 
 def run_plot_widget(self):
-    QMessageBox.warning(self.window, "Sorry", "I'm still under development!")
+    if self.processed_dataframe is None:
+        QMessageBox.critical(self.window, "Error", "No processed dataframe to be plotted")
+        return 
+    if 'Clusters' in self.processed_dataframe.columns:
+        if len(self.processed_dataframe.columns.tolist()) == 3:
+            labels = self.processed_dataframe['Clusters']
+            data = self.processed_dataframe.drop(columns=['Clusters'])
+            plot_widget = PlotWidget(data, labels=labels)
+        elif len(self.processed_dataframe.columns.tolist()) == 4: 
+            labels = self.processed_dataframe['Clusters']
+            data = self.processed_dataframe.drop(columns=['Clusters'])
+            plot_widget = PlotWidget(data, labels=labels, plot_type='3D')
+        else:
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            return 
+    else:
+        if len(self.processed_dataframe.columns.tolist()) == 2:
+            plot_widget = PlotWidget(self.processed_dataframe)
+        elif len(self.processed_dataframe.columns.tolist()) == 3:
+            plot_widget = PlotWidget(self.processed_dataframe, plot_type='3D')
+        else:
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            return 
+    plot_widget.exec_()
+
+
 
 

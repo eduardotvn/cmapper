@@ -33,7 +33,7 @@ def apply_kmeans(pca_dataframe, clusters):
 
     kmeans = KMeans(n_clusters=clusters)  
     kmeans.fit(pca_dataframe)
-    pca_dataframe['Cluster'] = kmeans.labels_
+    pca_dataframe['Clusters'] = kmeans.labels_
 
     return pca_dataframe
 

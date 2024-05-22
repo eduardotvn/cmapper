@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox, QCheckBox
 from PyQt5.QtWidgets import QTableWidgetItem
 from utils.applyTSNE import apply_TSNE
 from frames.buttons.mainFuncs import run_save_processed_df
+from frames.widgets.DfPlot import PlotWidget
 
 def load_TSNE_buttons(self, parent):
     
@@ -69,6 +70,9 @@ def load_TSNE_buttons(self, parent):
     self.saveDFButton.setText("Save DF")
     self.saveDFButton.clicked.connect(lambda: run_save_processed_df(self))
 
+    if self.processed_dataframe is not None: 
+        self.populate_pca_table()
+
 
 def generate_TSNE_information(self):
     try:
@@ -119,4 +123,14 @@ def load_default_values(self):
     self.numIterationInput.setText("300")
 
 def run_plot_widget(self):
-    QMessageBox.warning(self.window, "Sorry", "I'm still under development!")
+    if self.processed_dataframe is None:
+        QMessageBox.critical(self.window, "Error", "No processed dataframe to be plotted")
+        return 
+    if len(self.processed_dataframe.columns.tolist()) == 2:
+        plot_widget = PlotWidget(self.processed_dataframe)
+    elif len(self.processed_dataframe.columns.tolist()) == 3:
+        plot_widget = PlotWidget(self.processed_dataframe, plot_type='3D')
+    else:
+        QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+        return 
+    plot_widget.exec_()
