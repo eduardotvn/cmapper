@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem
 from utils.applyLDA import apply_lda
+from frames.buttons.mainFuncs import run_save_processed_df
 
 def load_LDA_buttons(self, parent):
     
@@ -9,8 +10,8 @@ def load_LDA_buttons(self, parent):
     self.numComponentsLabel.setGeometry(QtCore.QRect(5, 30, 150, 30))
     self.numComponentsLabel.setText("Number of components:")
 
-    self.numComponentsInput = QtWidgets.QLineEdit(parent)
-    self.numComponentsInput.setGeometry(QtCore.QRect(160, 30, 150, 30))
+    self.numComponentsInputLDA = QtWidgets.QLineEdit(parent)
+    self.numComponentsInputLDA.setGeometry(QtCore.QRect(160, 30, 150, 30))
     
     self.scalerLabel = QtWidgets.QLabel(parent)
     self.scalerLabel.setGeometry(QtCore.QRect(5, 65, 100, 30))
@@ -42,6 +43,11 @@ def load_LDA_buttons(self, parent):
     self.plotButton.setText("Plot")
     self.plotButton.clicked.connect(lambda: run_plot_widget(self))
 
+    self.saveDFButton = QtWidgets.QPushButton(parent)
+    self.saveDFButton.setGeometry(QtCore.QRect(565, 240, 88, 34))
+    self.saveDFButton.setText("Save DF")
+    self.saveDFButton.clicked.connect(lambda: run_save_processed_df(self))
+
     self.accLabel = QtWidgets.QLabel(parent)
     self.accLabel.setGeometry(QtCore.QRect(350, 230, 250, 30))
 
@@ -52,7 +58,7 @@ def run_plot_widget(self):
 def generate_LDA_information(self):
     target = self.targetColCB.currentText()
     dataframe = self.current_dataframe.copy()
-    num_components = self.numComponentsInput.text()
+    num_components = self.numComponentsInputLDA.text()
     scaler = self.scalerOptions.currentText()
 
     if num_components == '':

@@ -3,6 +3,8 @@ from utils.datasetInfo import turn_db_into_dataframe
 from io import StringIO
 from .buttons.buttonFuncs import run_encoder_dialog, run_drop_column_dialog, run_correlation_matrix_dialog
 from .Dialogs.DataFrameHead import DataFrameDialog
+from frames.buttons.mainFuncs import save_data
+
 
 def load_corr_matrix_visualization(self, parent):
     self.running_feature.hide()
@@ -59,10 +61,16 @@ def load_corr_matrix_visualization(self, parent):
     self.GenerateCMButton.setText("Generate")
     self.GenerateCMButton.clicked.connect(lambda: run_correlation_matrix_dialog(self))
 
+    self.saveDFButton = QtWidgets.QPushButton(self.DataOptions)
+    self.saveDFButton.setGeometry(QtCore.QRect(275, 420, 88, 34))
+    self.saveDFButton.setText("Save DF")
+    self.saveDFButton.clicked.connect(lambda: save_data(self, self.current_dataframe))
+
     self.tablesOptions.addItems(self.found_tables)
 
     self.running_feature = self.CorrelationMatrixGB
     self.running_feature.show()
+
 
 def reload_dataframe(self):
     self.refresh_df_info()

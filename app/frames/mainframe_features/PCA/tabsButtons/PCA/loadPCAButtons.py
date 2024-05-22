@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QTableWidgetItem
 from .Dialogs.NumClustersDialog import Ui_ClustersDialog
 from .Dialogs.DfPlot import PlotWidget
+from frames.buttons.mainFuncs import run_save_processed_df
 
 def load_pca_buttons(self, parent):
     
@@ -12,8 +13,8 @@ def load_pca_buttons(self, parent):
     self.numComponentsLabel.setGeometry(QtCore.QRect(5, 30, 150, 30))
     self.numComponentsLabel.setText("Number of components:")
 
-    self.numComponentsInput = QtWidgets.QLineEdit(parent)
-    self.numComponentsInput.setGeometry(QtCore.QRect(160, 30, 150, 30))
+    self.numComponentsInputPCA = QtWidgets.QLineEdit(parent)
+    self.numComponentsInputPCA.setGeometry(QtCore.QRect(160, 30, 150, 30))
     
     self.scalerLabel = QtWidgets.QLabel(parent)
     self.scalerLabel.setGeometry(QtCore.QRect(5, 70, 100, 30))
@@ -42,15 +43,23 @@ def load_pca_buttons(self, parent):
     self.plotButton.setText("Plot")
     self.plotButton.clicked.connect(lambda: run_plot_widget(self))
 
+    self.saveDFButton = QtWidgets.QPushButton(parent)
+    self.saveDFButton.setGeometry(QtCore.QRect(565, 240, 88, 34))
+    self.saveDFButton.setText("Save DF")
+    self.saveDFButton.clicked.connect(lambda: run_save_processed_df(self))
+
     self.evrLabel = QtWidgets.QLabel(parent)
     self.evrLabel.setGeometry(QtCore.QRect(350, 230, 250, 30))
 
 def generate_pca_information(self):
     scaler = self.scalerOptions.currentText()
-    if self.numComponentsInput.text() == '':
+    if self.numComponentsInputPCA.text() == '':
         n_comps = 0
+        print("Here")
     else:
-        n_comps = int(self.numComponentsInput.text())
+        n_comps = int(self.numComponentsInputPCA.text())
+
+    print(n_comps)
 
     if n_comps > len(self.current_dataframe.columns.tolist()) or n_comps <= 0:        
             QMessageBox.warning(self.window, "Warning", f"Choose a value between 1 and {len(self.current_dataframe.columns.tolist())}")
@@ -67,7 +76,7 @@ def generate_pca_information(self):
         self.evrLabel.setText(f"Explained Variance Ratio: {evr[0]:.4f}")
         self.populate_pca_table()
     elif error: 
-        QMessageBox.critical(self.window, "Error", f"{str(e)}")
+        QMessageBox.critical(self.window, "Error", f"{str(error)}")
 
 
 def run_clusters_dialog(self):
@@ -82,3 +91,5 @@ def run_clusters_dialog(self):
 
 def run_plot_widget(self):
     QMessageBox.warning(self.window, "Sorry", "I'm still under development!")
+
+

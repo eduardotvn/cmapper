@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QCheckBox
 from PyQt5.QtWidgets import QTableWidgetItem
 from utils.applyTSNE import apply_TSNE
+from frames.buttons.mainFuncs import run_save_processed_df
 
 def load_TSNE_buttons(self, parent):
     
@@ -9,8 +10,8 @@ def load_TSNE_buttons(self, parent):
     self.numComponentsLabel.setGeometry(QtCore.QRect(5, 30, 150, 30))
     self.numComponentsLabel.setText("Number of components:")
 
-    self.numComponentsInput = QtWidgets.QLineEdit(parent)
-    self.numComponentsInput.setGeometry(QtCore.QRect(160, 30, 150, 30))
+    self.numComponentsInputTSNE = QtWidgets.QLineEdit(parent)
+    self.numComponentsInputTSNE.setGeometry(QtCore.QRect(160, 30, 150, 30))
     
     self.scalerLabel = QtWidgets.QLabel(parent)
     self.scalerLabel.setGeometry(QtCore.QRect(5, 65, 100, 30))
@@ -63,10 +64,15 @@ def load_TSNE_buttons(self, parent):
     self.plotButton.setText("Plot")
     self.plotButton.clicked.connect(lambda: run_plot_widget(self))
 
+    self.saveDFButton = QtWidgets.QPushButton(parent)
+    self.saveDFButton.setGeometry(QtCore.QRect(565, 240, 88, 34))
+    self.saveDFButton.setText("Save DF")
+    self.saveDFButton.clicked.connect(lambda: run_save_processed_df(self))
+
 
 def generate_TSNE_information(self):
     try:
-        num_components = self.numComponentsInput.text()
+        num_components = self.numComponentsInputTSNE.text()
         if num_components == '' or int(num_components) <= 0 or int(num_components) > len(self.current_dataframe.columns.tolist()):
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for number of components")
             return 
