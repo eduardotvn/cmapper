@@ -36,8 +36,6 @@ def load_LDA_buttons(self, parent):
     self.LDAInfoData = QtWidgets.QTableWidget(parent)
     self.LDAInfoData.setGeometry(QtCore.QRect(350, 30, 400, 200))
     self.LDAInfoData.setStyleSheet("border: 1px solid black;")
-    if self.processed_dataframe_type == "LDA":
-        pass
 
     self.plotButton = QtWidgets.QPushButton(parent)
     self.plotButton.setGeometry(QtCore.QRect(665, 240, 88, 34))

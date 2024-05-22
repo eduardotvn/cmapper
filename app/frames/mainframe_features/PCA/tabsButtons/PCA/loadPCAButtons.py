@@ -36,8 +36,6 @@ def load_pca_buttons(self, parent):
     self.PCAInfoData = QtWidgets.QTableWidget(parent)
     self.PCAInfoData.setGeometry(QtCore.QRect(350, 30, 400, 200))
     self.PCAInfoData.setStyleSheet("border: 1px solid black;")
-    if self.processed_dataframe_type == "pca":
-        self.populate_pca_table()
 
     self.plotButton = QtWidgets.QPushButton(parent)
     self.plotButton.setGeometry(QtCore.QRect(665, 240, 88, 34))
@@ -65,7 +63,7 @@ def generate_pca_information(self):
 
     if df is not None: 
         self.processed_dataframe = df 
-        self.processed_dataframe_type = "pca"
+        self.processed_dataframe_type = "PCA"
         self.evrLabel.setText(f"Explained Variance Ratio: {evr[0]:.4f}")
         self.populate_pca_table()
     elif error: 
@@ -73,7 +71,7 @@ def generate_pca_information(self):
 
 
 def run_clusters_dialog(self):
-    if self.processed_dataframe is not None and self.processed_dataframe_type == "pca":
+    if self.processed_dataframe_type == "PCA":
         self.Clusters_Dialog = QtWidgets.QDialog()
         self.CluDialog = Ui_ClustersDialog()
         self.CluDialog.setupUi(self.Clusters_Dialog)

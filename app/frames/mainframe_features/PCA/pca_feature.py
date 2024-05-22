@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .tabsButtons.PCA.loadPCAButtons import load_pca_buttons
 from .tabsButtons.LDA.loadLDAButtons import load_LDA_buttons
+from .tabsButtons.TSNE.loadTSNEButtons import load_TSNE_buttons
 
 def load_pca_visualization(self, parent):
     self.running_feature.hide()
@@ -32,6 +33,7 @@ def load_pca_visualization(self, parent):
 
     load_pca_buttons(self, self.tab_pca)
     load_LDA_buttons(self, self.tab_lda)
+    load_TSNE_buttons(self, self.tab_tsne)
 
     self.running_feature = self.PCAGB
     self.running_feature.show()

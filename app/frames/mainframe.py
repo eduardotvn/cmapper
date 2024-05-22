@@ -268,10 +268,12 @@ class Ui_MainWindow(object):
             self.DFInfoText.setText(f"Current columns: {cols}, TOTAL: {len(cols)}")
 
     def populate_pca_table(self):
-        if self.processed_dataframe_type == "pca":
+        if self.processed_dataframe_type == "PCA":
             target = self.PCAInfoData
         elif self.processed_dataframe_type == "LDA":
             target = self.LDAInfoData
+        elif self.processed_dataframe_type == "TSNE":
+            target = self.TSNEInfoData
 
         df = self.processed_dataframe.copy()
         target.clearContents()
