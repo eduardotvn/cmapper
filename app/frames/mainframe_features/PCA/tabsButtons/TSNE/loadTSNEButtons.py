@@ -111,3 +111,6 @@ def load_default_values(self):
     self.randomStateInput.setText("0")
     self.perplexityInput.setText("30")
     self.numIterationInput.setText("300")
+
+def run_plot_widget(self):
+    QMessageBox.warning(self.window, "Sorry", "I'm still under development!")
