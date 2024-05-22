@@ -4,8 +4,10 @@ from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from PyQt5.QtWidgets import QTableWidgetItem
 from db.connection.tableHandlers import check_tables
-from frames.mainframe_features.CorrelationMatrix.dataframeEditFeature import load_dataframe_edit_feature
-from frames.mainframe_features.PCA.pca_feature import load_pca_visualization
+from frames.mainframe_features.DataframeEdit.dataframeEditFeature import load_dataframe_edit_feature
+from frames.mainframe_features.DimensionalReduction.pca_feature import load_pca_visualization
+from frames.mainframe_features.MachineLearning.MLTabs import load_machine_learning_tabs
+from frames.mainframe_features.Plot.load_plotting_feature import load_plotting_features
 from utils.datasetInfo import turn_db_into_dataframe
 from io import StringIO
 
@@ -99,19 +101,20 @@ class Ui_MainWindow(object):
         self.CorrelationButton.setObjectName("CorrelationButton")
         self.CorrelationButton.clicked.connect(lambda: load_dataframe_edit_feature(self, MainWindow))
 
-        self.ChartsButton = QtWidgets.QPushButton(self.centralwidget)
-        self.ChartsButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
-        self.ChartsButton.setObjectName("ChartsButton")
-        self.ChartsButton.clicked.connect(self.VisualizationGB.hide)
+        self.PlottingButton = QtWidgets.QPushButton(self.centralwidget)
+        self.PlottingButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
+        self.PlottingButton.setObjectName("PlottingButton")
+        self.PlottingButton.clicked.connect(lambda: load_plotting_features(self, MainWindow))
 
-        self.PCAButton = QtWidgets.QPushButton(self.centralwidget)
-        self.PCAButton.setGeometry(QtCore.QRect(50, 220, 91, 91))
-        self.PCAButton.setObjectName("PCAButton")
-        self.PCAButton.clicked.connect(lambda: load_pca_visualization(self, MainWindow))
+        self.DRButton = QtWidgets.QPushButton(self.centralwidget)
+        self.DRButton.setGeometry(QtCore.QRect(50, 220, 91, 91))
+        self.DRButton.setObjectName("DRButton")
+        self.DRButton.clicked.connect(lambda: load_pca_visualization(self, MainWindow))
 
-        self.OtherButton = QtWidgets.QPushButton(self.centralwidget)
-        self.OtherButton.setGeometry(QtCore.QRect(50, 420, 91, 91))
-        self.OtherButton.setObjectName("OtherButton")
+        self.MLButton = QtWidgets.QPushButton(self.centralwidget)
+        self.MLButton.setGeometry(QtCore.QRect(50, 420, 91, 91))
+        self.MLButton.setObjectName("MLButton")
+        self.MLButton.clicked.connect(lambda: load_machine_learning_tabs(self, MainWindow))
 
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -297,10 +300,10 @@ class Ui_MainWindow(object):
         self.DeleteDBButton.setText(_translate("MainWindow", "Delete Database"))
         self.RefreshButton.setText(_translate("MainWindow", "Refresh"))
         self.VisualizationButton.setText(_translate("MainWindow", "Database\nVisualization"))
-        self.ChartsButton.setText(_translate("MainWindow", "Charts"))
-        self.PCAButton.setText(_translate("MainWindow", "Dimensional\nReduction"))
+        self.PlottingButton.setText(_translate("MainWindow", "Plotting"))
+        self.DRButton.setText(_translate("MainWindow", "Dimensional\nReduction"))
         self.CorrelationButton.setText(_translate("MainWindow", "Edit\nDataframe"))
-        self.OtherButton.setText(_translate("MainWindow", "Other"))
+        self.MLButton.setText(_translate("MainWindow", "Machine\nLearning"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuDatabase.setTitle(_translate("MainWindow", "Database"))
         self.menuDocker.setTitle(_translate("MainWindow", "Docker"))

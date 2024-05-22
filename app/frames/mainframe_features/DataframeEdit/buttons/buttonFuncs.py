@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from frames.mainframe_features.CorrelationMatrix.Dialogs.EncoderDialog import Ui_EncoderDialog
-from frames.mainframe_features.CorrelationMatrix.Dialogs.DropColumnDialog import Ui_DropColDialog
-from frames.mainframe_features.CorrelationMatrix.Dialogs.CorrelationMatrix import CorrelationMatrixDialog
+from frames.mainframe_features.DataframeEdit.Dialogs.EncoderDialog import Ui_EncoderDialog
+from frames.mainframe_features.DataframeEdit.Dialogs.DropColumnDialog import Ui_DropColDialog
+from frames.mainframe_features.DataframeEdit.Dialogs.CorrelationMatrix import CorrelationMatrixDialog
 
 def run_encoder_dialog(self):
 
