@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
 
 def apply_TSNE(dataframe, num_components, scaler_option, rand_state, perplex, num_iter):
     try:
-        tsne = TSNE(num_components=num_components, random_state=rand_state, perplexity=perplex, n_iter=num_iter)
+        tsne = TSNE(n_components=num_components, random_state=rand_state, perplexity=perplex, n_iter=num_iter)
         df = dataframe.copy()
 
         scaler = None 

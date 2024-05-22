@@ -73,19 +73,19 @@ def generate_TSNE_information(self):
 
         scaler = self.scalerOptions.currentText()
 
-        rand_state = self.randomStateInput.currentText()
+        rand_state = self.randomStateInput.text()
 
         if rand_state == '' or int(rand_state) < 0:
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for number for random state")
             return 
 
-        perplexity = self.perplexityInput.currentText()
+        perplexity = self.perplexityInput.text()
 
         if perplexity == '' or int(perplexity) < 0:
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for perplexity")
             return
 
-        iterations = self.iterations.currentText()
+        iterations = self.numIterationInput.text()
         if iterations == '' or int(perplexity) < 0:
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for number of iterations")
             return 
@@ -101,6 +101,8 @@ def generate_TSNE_information(self):
             self.processed_dataframe = resulting_df
             self.processed_dataframe_type = "TSNE"
             self.populate_pca_table()
+        else:
+            QMessageBox.critical(self.window, "Error", f"{str(error)}")
     except Exception as e:
         QMessageBox.critical(self.window, "Error", f"{str(e)}")
     
