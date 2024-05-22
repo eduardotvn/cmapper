@@ -6,7 +6,7 @@ from .Dialogs.DataFrameHead import DataFrameDialog
 from frames.buttons.mainFuncs import save_data
 
 
-def load_corr_matrix_visualization(self, parent):
+def load_dataframe_edit_feature(self, parent):
     self.running_feature.hide()
     
     self.CorrelationMatrixGB = QtWidgets.QGroupBox(parent)

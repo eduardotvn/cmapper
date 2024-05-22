@@ -4,7 +4,7 @@ from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from PyQt5.QtWidgets import QTableWidgetItem
 from db.connection.tableHandlers import check_tables
-from frames.mainframe_features.CorrelationMatrix.correlation_matrix_feature import load_corr_matrix_visualization
+from frames.mainframe_features.CorrelationMatrix.dataframeEditFeature import load_dataframe_edit_feature
 from frames.mainframe_features.PCA.pca_feature import load_pca_visualization
 from utils.datasetInfo import turn_db_into_dataframe
 from io import StringIO
@@ -97,7 +97,7 @@ class Ui_MainWindow(object):
         self.CorrelationButton = QtWidgets.QPushButton(self.centralwidget)
         self.CorrelationButton.setGeometry(QtCore.QRect(50, 120, 91, 91))
         self.CorrelationButton.setObjectName("CorrelationButton")
-        self.CorrelationButton.clicked.connect(lambda: load_corr_matrix_visualization(self, MainWindow))
+        self.CorrelationButton.clicked.connect(lambda: load_dataframe_edit_feature(self, MainWindow))
 
         self.ChartsButton = QtWidgets.QPushButton(self.centralwidget)
         self.ChartsButton.setGeometry(QtCore.QRect(50, 320, 91, 91))
@@ -296,10 +296,10 @@ class Ui_MainWindow(object):
         self.DeleteButton.setText(_translate("MainWindow", "Delete"))
         self.DeleteDBButton.setText(_translate("MainWindow", "Delete Database"))
         self.RefreshButton.setText(_translate("MainWindow", "Refresh"))
-        self.VisualizationButton.setText(_translate("MainWindow", "Visualization"))
+        self.VisualizationButton.setText(_translate("MainWindow", "Database\nVisualization"))
         self.ChartsButton.setText(_translate("MainWindow", "Charts"))
-        self.PCAButton.setText(_translate("MainWindow", "PCA"))
-        self.CorrelationButton.setText(_translate("MainWindow", "Correlation"))
+        self.PCAButton.setText(_translate("MainWindow", "Dimensional\nReduction"))
+        self.CorrelationButton.setText(_translate("MainWindow", "Edit\nDataframe"))
         self.OtherButton.setText(_translate("MainWindow", "Other"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuDatabase.setTitle(_translate("MainWindow", "Database"))
