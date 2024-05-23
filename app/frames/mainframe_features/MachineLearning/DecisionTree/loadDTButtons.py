@@ -1,9 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget
 from utils.machineLearning.decisionTreeCLS import apply_dt
 import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showDT import DecisionTreeDialog
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
+from sklearn.tree import DecisionTreeClassifier
+from frames.buttons.mainFuncs import save_data
 
 def load_dt_buttons(self, parent):
     self.DTData = DT_Data()
@@ -70,13 +72,18 @@ def load_dt_buttons(self, parent):
     self.saveModelButton.hide()
 
     self.loadModelButton = QtWidgets.QPushButton(parent)
-    self.loadModelButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
+    self.loadModelButton.setGeometry(QtCore.QRect(5, 375, 88, 34))
     self.loadModelButton.setText("Load Model")
     self.loadModelButton.clicked.connect(lambda: load_dt_model(self))
 
     self.loadedModelLabel = QtWidgets.QLabel(parent)
-    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 420, 100, 34))
+    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 375, 100, 34))
     self.loadedModelLabel.hide()
+
+    self.applyDTButton = QtWidgets.QPushButton(parent)
+    self.applyDTButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
+    self.applyDTButton.setText("Apply DT")
+    self.applyDTButton.clicked.connect(lambda: apply_dt_over_dataset(self))
 
 def set_default_Values(self):
     self.testSizeInputDT.setText("20")
@@ -165,6 +172,7 @@ def load_dt_model(self):
             QMessageBox.information(self.window, "Success", f"Model loaded from {file_path}")
             self.loadedModelLabel.setText(file_path)
             self.loadedModelLabel.show()
+            QMessageBox.warning(self.window, "Important", "Be mindful that models must be used in a dataset with same features as the one it was trained on.")
         except Exception as e:
             QMessageBox.critical(self.window, "Error", f"Failed to load model: {str(e)}")
 
@@ -175,6 +183,53 @@ def view_tree(self):
 def view_confusion_matrix(self):
     cmDialog = ConfusionMatrixDialog(self.DTData.confusion_matrix)
     cmDialog.exec_()
+
+def apply_dt_over_dataset(self):
+    try:
+        if not hasattr(self.DTData, 'classifier') or self.DTData.classifier is None:
+            raise ValueError("Classifier is not initialized.")
+        if not hasattr(self, 'current_dataframe') or self.current_dataframe is None:
+            raise ValueError("Current dataframe is not initialized.")
+        
+        classifier = self.DTData.classifier
+        df = self.current_dataframe.copy()
+        
+        expected_features = classifier.feature_names_in_
+        if not all(feature in df.columns for feature in expected_features):
+            raise ValueError("Current dataframe does not contain the expected features.")
+        
+        predictions = classifier.predict(df[expected_features])
+        df['Pred'] = predictions
+        self.current_dataframe = df
+        
+        self.predictedDFInfo = QTableWidget(parent=self.dtInfoData.parent())
+        self.predictedDFInfo.setGeometry(self.dtInfoData.geometry())
+        self.predictedDFInfo.setStyleSheet("border: 1px solid black;")
+
+        self.savePredictedDFButton = QPushButton(parent = self.dtInfoData.parent())
+        self.savePredictedDFButton.setGeometry(self.saveModelButton.geometry())
+        self.savePredictedDFButton.connect(lambda: save_data(self, self.current_dataframe))
+        self.savePredictedDFButton.show()
+        
+        df = self.current_dataframe
+        
+        self.predictedDFInfo.setRowCount(df.shape[0])
+        self.predictedDFInfo.setColumnCount(df.shape[1])
+        
+        self.predictedDFInfo.setHorizontalHeaderLabels(df.columns)
+        
+        for row in range(df.shape[0]):
+            for col in range(df.shape[1]):
+                item = QTableWidgetItem(str(df.iat[row, col]))
+                self.predictedDFInfo.setItem(row, col, item)
+        self.predictedDFInfo.show()
+    except ValueError as ve:
+        QMessageBox.critical(self.window, "Value Error", f"{str(ve)}")
+    except AttributeError as ae:
+        QMessageBox.critical(self.window, "Attribute Error", f"{str(ae)}")
+    except Exception as e:
+        QMessageBox.critical(self.window, "Error", f"An unexpected error occurred: {str(e)}")
+
 
 class DT_Data:
     def __init__(self, accuracy=None, f1score=None, classifier=None, classification_report=None, confusion_matrix = None,gini=None):
