@@ -69,6 +69,15 @@ def load_dt_buttons(self, parent):
     self.saveModelButton.clicked.connect(lambda: save_dt_model(self))
     self.saveModelButton.hide()
 
+    self.loadModelButton = QtWidgets.QPushButton(parent)
+    self.loadModelButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
+    self.loadModelButton.setText("Load Model")
+    self.loadModelButton.clicked.connect(lambda: load_dt_model(self))
+
+    self.loadedModelLabel = QtWidgets.QLabel(parent)
+    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 420, 100, 34))
+    self.loadedModelLabel.hide()
+
 def set_default_Values(self):
     self.testSizeInputDT.setText("20")
     self.randomStateInputDT.setText("42")
@@ -140,6 +149,24 @@ def save_dt_model(self):
             QMessageBox.information(self.window, "Success", f"Model saved to {file_path}")
         except Exception as e:
             QMessageBox.critical(self.window, "Error", f"Failed to save model: {str(e)}")
+
+def load_dt_model(self):
+    options = QFileDialog.Options()
+    file_path, _ = QFileDialog.getOpenFileName(self.window,
+                                               "Load Decision Tree Model",
+                                               "",
+                                               "Pickle Files (*.pkl);;All Files (*)",
+                                               options=options)
+    if file_path:
+        try:
+            with open(file_path, 'rb') as file:
+                classifier = pickle.load(file)
+            self.DTData.classifier = classifier
+            QMessageBox.information(self.window, "Success", f"Model loaded from {file_path}")
+            self.loadedModelLabel.setText(file_path)
+            self.loadedModelLabel.show()
+        except Exception as e:
+            QMessageBox.critical(self.window, "Error", f"Failed to load model: {str(e)}")
 
 def view_tree(self):
     tree = DecisionTreeDialog(self.DTData.classifier)
