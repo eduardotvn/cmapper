@@ -5,6 +5,7 @@ import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
 from sklearn.linear_model import LinearRegression
 from frames.buttons.mainFuncs import save_data
+from frames.mainframe_features.DataframeEdit.Dialogs.DataFrameHead import DataFrameDialog
 
 def load_SVM_buttons(self, parent):
     self.SVMData = SVM_Data()
@@ -12,6 +13,11 @@ def load_SVM_buttons(self, parent):
     self.defaultDataframeLabel = QtWidgets.QLabel(parent)
     self.defaultDataframeLabel.setGeometry(QtCore.QRect(5, 20, 150, 30))
     self.defaultDataframeLabel.setText("Using current dataframe")
+
+    self.defaultDataframePreviewSVM = QtWidgets.QPushButton(parent)
+    self.defaultDataframePreviewSVM.setGeometry(QtCore.QRect(160, 20, 88, 34))
+    self.defaultDataframePreviewSVM.setText("Preview")
+    self.defaultDataframePreviewSVM.clicked.connect(lambda: show_dataframe_sample(self))
 
     self.SVMInfoData = QtWidgets.QTextEdit(parent)
     self.SVMInfoData.setGeometry(QtCore.QRect(350, 40, 400, 300))
@@ -149,6 +155,11 @@ def save_SVM_model(self):
 def view_confusion_matrix(self):
     cmDialog = ConfusionMatrixDialog(self.SVMData.confusion_matrix)
     cmDialog.exec_()
+
+def show_dataframe_sample(self):
+    df_sample = self.current_dataframe.head()
+    self.dialog = DataFrameDialog(df_sample)
+    self.dialog.exec_()
 
 def load_SVM_model(self):
     options = QFileDialog.Options()

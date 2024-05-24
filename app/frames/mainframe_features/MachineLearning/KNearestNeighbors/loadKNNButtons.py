@@ -4,6 +4,7 @@ from utils.machineLearning.knearestNeighboursCLS import apply_knn
 import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
 from frames.buttons.mainFuncs import save_data
+from frames.mainframe_features.DataframeEdit.Dialogs.DataFrameHead import DataFrameDialog
 
 def load_KNN_buttons(self, parent):
     self.KNNData = KNN_Data()
@@ -11,6 +12,11 @@ def load_KNN_buttons(self, parent):
     self.defaultDataframeLabel = QtWidgets.QLabel(parent)
     self.defaultDataframeLabel.setGeometry(QtCore.QRect(5, 20, 150, 30))
     self.defaultDataframeLabel.setText("Using current dataframe")
+
+    self.defaultDataframePreviewKNN = QtWidgets.QPushButton(parent)
+    self.defaultDataframePreviewKNN.setGeometry(QtCore.QRect(160, 20, 88, 34))
+    self.defaultDataframePreviewKNN.setText("Preview")
+    self.defaultDataframePreviewKNN.clicked.connect(lambda: show_dataframe_sample(self))
 
     self.KNNInfoData = QtWidgets.QTextEdit(parent)
     self.KNNInfoData.setGeometry(QtCore.QRect(350, 40, 400, 300))
@@ -181,6 +187,11 @@ def load_KNN_model(self):
 def view_confusion_matrix(self):
     cmDialog = ConfusionMatrixDialog(self.KNNData.confusion_matrix)
     cmDialog.exec_()
+
+def show_dataframe_sample(self):
+    df_sample = self.current_dataframe.head()
+    self.dialog = DataFrameDialog(df_sample)
+    self.dialog.exec_()
 
 def apply_KNN_over_dataset(self):
     try:

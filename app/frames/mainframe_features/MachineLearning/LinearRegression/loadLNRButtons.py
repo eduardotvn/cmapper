@@ -6,6 +6,7 @@ from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM impor
 from sklearn.linear_model import LinearRegression
 from .Dialogs.lnrPlot import LinearRegressionDialog
 from frames.buttons.mainFuncs import save_data
+from frames.mainframe_features.DataframeEdit.Dialogs.DataFrameHead import DataFrameDialog
 
 def load_LNR_buttons(self, parent):
     self.LNRData = LNR_Data()
@@ -13,6 +14,11 @@ def load_LNR_buttons(self, parent):
     self.defaultDataframeLabel = QtWidgets.QLabel(parent)
     self.defaultDataframeLabel.setGeometry(QtCore.QRect(5, 20, 150, 30))
     self.defaultDataframeLabel.setText("Using current dataframe")
+
+    self.defaultDataframePreviewLNR = QtWidgets.QPushButton(parent)
+    self.defaultDataframePreviewLNR.setGeometry(QtCore.QRect(160, 20, 88, 34))
+    self.defaultDataframePreviewLNR.setText("Preview")
+    self.defaultDataframePreviewLNR.clicked.connect(lambda: show_dataframe_sample(self))
 
     self.LNRInfoData = QtWidgets.QTextEdit(parent)
     self.LNRInfoData.setGeometry(QtCore.QRect(350, 40, 400, 300))
@@ -128,6 +134,11 @@ def run_LNR_training(self):
         self.saveModelButtonLNR.show()
         self.plotRegression.show()
         self.viewCMButton.show()
+
+def show_dataframe_sample(self):
+    df_sample = self.current_dataframe.head()
+    self.dialog = DataFrameDialog(df_sample)
+    self.dialog.exec_()
 
 def save_LNR_model(self):
 

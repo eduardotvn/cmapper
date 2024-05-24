@@ -6,6 +6,7 @@ from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showDT impor
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
 from sklearn.tree import DecisionTreeClassifier
 from frames.buttons.mainFuncs import save_data
+from frames.mainframe_features.DataframeEdit.Dialogs.DataFrameHead import DataFrameDialog
 
 def load_dt_buttons(self, parent):
     self.DTData = DT_Data()
@@ -13,6 +14,11 @@ def load_dt_buttons(self, parent):
     self.defaultDataframeLabel = QtWidgets.QLabel(parent)
     self.defaultDataframeLabel.setGeometry(QtCore.QRect(5, 20, 150, 30))
     self.defaultDataframeLabel.setText("Using current dataframe")
+
+    self.defaultDataframePreviewDT = QtWidgets.QPushButton(parent)
+    self.defaultDataframePreviewDT.setGeometry(QtCore.QRect(160, 20, 88, 34))
+    self.defaultDataframePreviewDT.setText("Preview")
+    self.defaultDataframePreviewDT.clicked.connect(lambda: show_dataframe_sample(self))
 
     self.dtInfoData = QtWidgets.QTextEdit(parent)
     self.dtInfoData.setGeometry(QtCore.QRect(350, 40, 400, 300))
@@ -179,6 +185,11 @@ def load_dt_model(self):
 def view_tree(self):
     tree = DecisionTreeDialog(self.DTData.classifier)
     tree.exec_()
+
+def show_dataframe_sample(self):
+    df_sample = self.current_dataframe.head()
+    self.dialog = DataFrameDialog(df_sample)
+    self.dialog.exec_()
 
 def view_confusion_matrix(self):
     cmDialog = ConfusionMatrixDialog(self.DTData.confusion_matrix)

@@ -5,6 +5,7 @@ import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
 from sklearn.linear_model import LinearRegression
 from frames.buttons.mainFuncs import save_data
+from frames.mainframe_features.DataframeEdit.Dialogs.DataFrameHead import DataFrameDialog
 
 def load_LGR_buttons(self, parent):
     self.LGRData = LGR_Data()
@@ -12,6 +13,11 @@ def load_LGR_buttons(self, parent):
     self.defaultDataframeLabel = QtWidgets.QLabel(parent)
     self.defaultDataframeLabel.setGeometry(QtCore.QRect(5, 20, 150, 30))
     self.defaultDataframeLabel.setText("Using current dataframe")
+
+    self.defaultDataframePreviewLGR = QtWidgets.QPushButton(parent)
+    self.defaultDataframePreviewLGR.setGeometry(QtCore.QRect(160, 20, 88, 34))
+    self.defaultDataframePreviewLGR.setText("Preview")
+    self.defaultDataframePreviewLGR.clicked.connect(lambda: show_dataframe_sample(self))
 
     self.LGRInfoData = QtWidgets.QTextEdit(parent)
     self.LGRInfoData.setGeometry(QtCore.QRect(350, 40, 400, 300))
@@ -125,6 +131,11 @@ def run_LGR_training(self):
         set_LGR_info(self)
         self.saveModelButtonLGR.show()
         self.viewCMButtonLGR.show()
+
+def show_dataframe_sample(self):
+    df_sample = self.current_dataframe.head()
+    self.dialog = DataFrameDialog(df_sample)
+    self.dialog.exec_()
 
 def save_LGR_model(self):
 
