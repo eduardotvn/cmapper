@@ -20,17 +20,6 @@ def apply_lnr(dataframe, target, test_size, random_state):
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
 
-        print(f"Mean Squared Error: {mse}")
-        print(f"R² Score: {r2}")
-
-        plt.scatter(X_test, y_test, color='blue', label='Actual')
-        plt.plot(X_test, y_pred, color='red', linewidth=2, label='Predicted')
-        plt.xlabel('X')
-        plt.ylabel('y')
-        plt.title('Linear Regression')
-        plt.legend()
-        plt.show()
-
         return model, mse, r2, X_test, y_test, y_pred, None
     except Exception as e: 
         return None, None, None, None, None, None, e

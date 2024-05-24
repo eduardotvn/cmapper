@@ -1,5 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .DecisionTree.loadDTButtons import load_dt_buttons
+from .LinearRegression.loadLNRButtons import load_LNR_buttons
+from .SupportVectorMachine.loadSVMButtons import load_SVM_buttons
+from .LogisticRegression.loadLGRButtons import load_LGR_buttons
+from .KNearestNeighbors.loadKNNButtons import load_KNN_buttons
 
 def load_machine_learning_tabs(self, parent):
     self.running_feature.hide()
@@ -27,6 +31,10 @@ def load_machine_learning_tabs(self, parent):
     self.MLGBTabs.addTab(self.tab_knn, "KNN")
 
     load_dt_buttons(self, self.tab_decision_tree)
+    load_LNR_buttons(self, self.tab_linear_regression)
+    load_SVM_buttons(self, self.tab_svm)
+    load_LGR_buttons(self, self.tab_logistic_regression)
+    load_KNN_buttons(self, self.tab_knn)
 
     self.running_feature = self.MLGB
     self.running_feature.show()

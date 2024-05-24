@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def apply_lgr(dataframe, target, test_size, random_state):
+def apply_lgr(dataframe, target, random_state, test_size):
     try:
         df = dataframe.copy()
 

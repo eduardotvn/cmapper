@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-def apply_knn(dataframe, target, test_size, random_state, n_neighbors):
+def apply_knn(dataframe, target, random_state, test_size, n_neighbors):
     try:
         df = dataframe.copy()
         X = df.drop(columns = [target])
@@ -22,7 +22,7 @@ def apply_knn(dataframe, target, test_size, random_state, n_neighbors):
         cm = confusion_matrix(y_test, y_pred)
         report = classification_report(y_test, y_pred)
 
-        return knn, accuracy, cm, report, None
+        return knn, accuracy, report, cm, None
         
     except Exception as e:
         return None, None, None, None, e
