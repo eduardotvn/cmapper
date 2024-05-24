@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget
+from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget, QPushButton
 from utils.machineLearning.linearRegressionCLS import apply_lnr
 import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
@@ -59,20 +59,20 @@ def load_LNR_buttons(self, parent):
     self.LNRDefaultValuesCB.setGeometry(QtCore.QRect(125, 238, 20, 20))
     self.LNRDefaultValuesCB.stateChanged.connect(lambda: set_default_Values(self))
 
-    self.saveModelButton = QtWidgets.QPushButton(parent)
-    self.saveModelButton.setGeometry(QtCore.QRect(225, 340, 88, 34))
-    self.saveModelButton.setText("Save Model")
-    self.saveModelButton.clicked.connect(lambda: save_LNR_model(self))
-    self.saveModelButton.hide()
+    self.saveModelButtonLNR = QtWidgets.QPushButton(parent)
+    self.saveModelButtonLNR.setGeometry(QtCore.QRect(225, 340, 88, 34))
+    self.saveModelButtonLNR.setText("Save Model")
+    self.saveModelButtonLNR.clicked.connect(lambda: save_LNR_model(self))
+    self.saveModelButtonLNR.hide()
 
     self.loadModelButton = QtWidgets.QPushButton(parent)
     self.loadModelButton.setGeometry(QtCore.QRect(5, 375, 88, 34))
     self.loadModelButton.setText("Load Model")
     self.loadModelButton.clicked.connect(lambda: load_LNR_model(self))
 
-    self.loadedModelLabel = QtWidgets.QLabel(parent)
-    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 375, 100, 34))
-    self.loadedModelLabel.hide()
+    self.loadedModelLabelLNR = QtWidgets.QLabel(parent)
+    self.loadedModelLabelLNR.setGeometry(QtCore.QRect(100, 375, 100, 34))
+    self.loadedModelLabelLNR.hide()
 
     self.applyLNRButton = QtWidgets.QPushButton(parent)
     self.applyLNRButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
@@ -125,7 +125,7 @@ def run_LNR_training(self):
         self.LNRData.y_test = y_test
         self.LNRData.y_pred = y_pred
         set_LNR_info(self)
-        self.saveModelButton.show()
+        self.saveModelButtonLNR.show()
         self.plotRegression.show()
         self.viewCMButton.show()
 
@@ -137,7 +137,7 @@ def save_LNR_model(self):
         return
     options = QFileDialog.Options()
     file_path, _ = QFileDialog.getSaveFileName(self.window, 
-                                               "Save Decision Tree Model",
+                                               "Save Linear Regression Model",
                                                "",
                                                "Pickle Files (*.pkl);;All Files (*)",
                                                options=options)
@@ -162,8 +162,8 @@ def load_LNR_model(self):
                 classifier = pickle.load(file)
             self.LNRData.classifier = classifier
             QMessageBox.information(self.window, "Success", f"Model loaded from {file_path}")
-            self.loadedModelLabel.setText(file_path)
-            self.loadedModelLabel.show()
+            self.loadedModelLabelLNR.setText(file_path)
+            self.loadedModelLabelLNR.show()
             QMessageBox.warning(self.window, "Important", "Be mindful that models must be used in a dataset with same features as the one it was trained on.")
         except Exception as e:
             QMessageBox.critical(self.window, "Error", f"Failed to load model: {str(e)}")
@@ -198,7 +198,7 @@ def apply_LNR_over_dataset(self):
         self.predictedDFInfo.setStyleSheet("border: 1px solid black;")
 
         self.savePredictedDFButton = QPushButton(parent = self.LNRInfoData.parent())
-        self.savePredictedDFButton.setGeometry(self.saveModelButton.geometry())
+        self.savePredictedDFButton.setGeometry(self.saveModelButtonLNR.geometry())
         self.savePredictedDFButton.clicked.connect(lambda: save_data(self, self.current_dataframe))
         self.savePredictedDFButton.setText("Save DF")
         self.savePredictedDFButton.show()

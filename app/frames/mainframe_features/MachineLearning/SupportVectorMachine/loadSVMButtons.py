@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget
+from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget, QPushButton
 from utils.machineLearning.supportVectorMachineCLS import apply_svm
 import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
@@ -58,20 +58,20 @@ def load_SVM_buttons(self, parent):
     self.SVMDefaultValuesCB.setGeometry(QtCore.QRect(125, 238, 20, 20))
     self.SVMDefaultValuesCB.stateChanged.connect(lambda: set_default_Values(self))
 
-    self.saveModelButton = QtWidgets.QPushButton(parent)
-    self.saveModelButton.setGeometry(QtCore.QRect(225, 340, 88, 34))
-    self.saveModelButton.setText("Save Model")
-    self.saveModelButton.clicked.connect(lambda: save_SVM_model(self))
-    self.saveModelButton.hide()
+    self.saveModelButtonSVM = QtWidgets.QPushButton(parent)
+    self.saveModelButtonSVM.setGeometry(QtCore.QRect(225, 340, 88, 34))
+    self.saveModelButtonSVM.setText("Save Model")
+    self.saveModelButtonSVM.clicked.connect(lambda: save_SVM_model(self))
+    self.saveModelButtonSVM.hide()
 
     self.loadModelButton = QtWidgets.QPushButton(parent)
     self.loadModelButton.setGeometry(QtCore.QRect(5, 375, 88, 34))
     self.loadModelButton.setText("Load Model")
     self.loadModelButton.clicked.connect(lambda: load_SVM_model(self))
 
-    self.loadedModelLabel = QtWidgets.QLabel(parent)
-    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 375, 100, 34))
-    self.loadedModelLabel.hide()
+    self.loadedModelLabelSVM = QtWidgets.QLabel(parent)
+    self.loadedModelLabelSVM.setGeometry(QtCore.QRect(100, 375, 100, 34))
+    self.loadedModelLabelSVM.hide()
 
     self.applySVMButton = QtWidgets.QPushButton(parent)
     self.applySVMButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
@@ -123,7 +123,7 @@ def run_SVM_training(self):
         self.SVMData.classifier = classifier
         self.SVMData.report = class_report
         set_SVM_info(self)
-        self.saveModelButton.show()
+        self.saveModelButtonSVM.show()
         self.viewCMButtonSVM.show()
 
 def save_SVM_model(self):
@@ -134,7 +134,7 @@ def save_SVM_model(self):
         return
     options = QFileDialog.Options()
     file_path, _ = QFileDialog.getSaveFileName(self.window, 
-                                               "Save Decision Tree Model",
+                                               "Save SVM Model",
                                                "",
                                                "Pickle Files (*.pkl);;All Files (*)",
                                                options=options)
@@ -163,8 +163,8 @@ def load_SVM_model(self):
                 classifier = pickle.load(file)
             self.SVMData.classifier = classifier
             QMessageBox.information(self.window, "Success", f"Model loaded from {file_path}")
-            self.loadedModelLabel.setText(file_path)
-            self.loadedModelLabel.show()
+            self.loadedModelLabelSVM.setText(file_path)
+            self.loadedModelLabelSVM.show()
             QMessageBox.warning(self.window, "Important", "Be mindful that models must be used in a dataset with same features as the one it was trained on.")
         except Exception as e:
             QMessageBox.critical(self.window, "Error", f"Failed to load model: {str(e)}")
@@ -198,10 +198,11 @@ def apply_SVM_over_dataset(self):
         self.predictedDFInfo.setGeometry(self.SVMInfoData.geometry())
         self.predictedDFInfo.setStyleSheet("border: 1px solid black;")
 
-        self.savePredictedDFButton = QPushButton(parent = self.SVMInfoData.parent())
-        self.savePredictedDFButton.setGeometry(self.saveModelButton.geometry())
-        self.savePredictedDFButton.clicked.connect(lambda: save_data(self, self.current_dataframe))
-        self.savePredictedDFButton.show()
+        self.savePredictedDFButtonSVM = QPushButton(parent = self.SVMInfoData.parent())
+        self.savePredictedDFButtonSVM.setGeometry(self.saveModelButtonSVM.geometry())
+        self.savePredictedDFButtonSVM.clicked.connect(lambda: save_data(self, self.current_dataframe))
+        self.savePredictedDFButtonSVM.setText("Save DF")
+        self.savePredictedDFButtonSVM.show()
         
         df = self.current_dataframe
         

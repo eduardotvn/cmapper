@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget
+from PyQt5.QtWidgets import QCheckBox, QMessageBox, QFileDialog, QTableWidgetItem, QTableWidget, QPushButton
 from utils.machineLearning.logisticRegressionCLS import apply_lgr
 import pickle
 from frames.mainframe_features.MachineLearning.DecisionTree.Dialogs.showCM import ConfusionMatrixDialog
@@ -58,20 +58,20 @@ def load_LGR_buttons(self, parent):
     self.LGRDefaultValuesCB.setGeometry(QtCore.QRect(125, 238, 20, 20))
     self.LGRDefaultValuesCB.stateChanged.connect(lambda: set_default_Values(self))
 
-    self.saveModelButton = QtWidgets.QPushButton(parent)
-    self.saveModelButton.setGeometry(QtCore.QRect(225, 340, 88, 34))
-    self.saveModelButton.setText("Save Model")
-    self.saveModelButton.clicked.connect(lambda: save_LGR_model(self))
-    self.saveModelButton.hide()
+    self.saveModelButtonLGR = QtWidgets.QPushButton(parent)
+    self.saveModelButtonLGR.setGeometry(QtCore.QRect(225, 340, 88, 34))
+    self.saveModelButtonLGR.setText("Save Model")
+    self.saveModelButtonLGR.clicked.connect(lambda: save_LGR_model(self))
+    self.saveModelButtonLGR.hide()
 
     self.loadModelButton = QtWidgets.QPushButton(parent)
     self.loadModelButton.setGeometry(QtCore.QRect(5, 375, 88, 34))
     self.loadModelButton.setText("Load Model")
     self.loadModelButton.clicked.connect(lambda: load_LGR_model(self))
 
-    self.loadedModelLabel = QtWidgets.QLabel(parent)
-    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 375, 100, 34))
-    self.loadedModelLabel.hide()
+    self.loadedModelLabelLGR = QtWidgets.QLabel(parent)
+    self.loadedModelLabelLGR.setGeometry(QtCore.QRect(100, 375, 100, 34))
+    self.loadedModelLabelLGR.hide()
 
     self.applyLGRButton = QtWidgets.QPushButton(parent)
     self.applyLGRButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
@@ -123,7 +123,7 @@ def run_LGR_training(self):
         self.LGRData.classifier = classifier
         self.LGRData.report = report
         set_LGR_info(self)
-        self.saveModelButton.show()
+        self.saveModelButtonLGR.show()
         self.viewCMButtonLGR.show()
 
 def save_LGR_model(self):
@@ -134,7 +134,7 @@ def save_LGR_model(self):
         return
     options = QFileDialog.Options()
     file_path, _ = QFileDialog.getSaveFileName(self.window, 
-                                               "Save Decision Tree Model",
+                                               "Save Logistic Regression Model",
                                                "",
                                                "Pickle Files (*.pkl);;All Files (*)",
                                                options=options)
@@ -159,8 +159,8 @@ def load_LGR_model(self):
                 classifier = pickle.load(file)
             self.LGRData.classifier = classifier
             QMessageBox.information(self.window, "Success", f"Model loaded from {file_path}")
-            self.loadedModelLabel.setText(file_path)
-            self.loadedModelLabel.show()
+            self.loadedModelLabelLGR.setText(file_path)
+            self.loadedModelLabelLGR.show()
             QMessageBox.warning(self.window, "Important", "Be mindful that models must be used in a dataset with same features as the one it was trained on.")
         except Exception as e:
             QMessageBox.critical(self.window, "Error", f"Failed to load model: {str(e)}")
@@ -191,11 +191,11 @@ def apply_LGR_over_dataset(self):
         self.predictedDFInfo.setGeometry(self.LGRInfoData.geometry())
         self.predictedDFInfo.setStyleSheet("border: 1px solid black;")
 
-        self.savePredictedDFButton = QPushButton(parent = self.LGRInfoData.parent())
-        self.savePredictedDFButton.setGeometry(self.saveModelButton.geometry())
-        self.savePredictedDFButton.clicked.connect(lambda: save_data(self, self.current_dataframe))
-        self.savePredictedDFButton.setText("Save DF")
-        self.savePredictedDFButton.show()
+        self.savePredictedDFButtonLGR = QPushButton(parent = self.LGRInfoData.parent())
+        self.savePredictedDFButtonLGR.setGeometry(self.saveModelButtonLGR.geometry())
+        self.savePredictedDFButtonLGR.clicked.connect(lambda: save_data(self, self.current_dataframe))
+        self.savePredictedDFButtonLGR.setText("Save DF")
+        self.savePredictedDFButtonLGR.show()
         
         df = self.current_dataframe
         

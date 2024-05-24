@@ -64,20 +64,20 @@ def load_KNN_buttons(self, parent):
     self.KNNDefaultValuesCB.setGeometry(QtCore.QRect(125, 288, 20, 20))
     self.KNNDefaultValuesCB.stateChanged.connect(lambda: set_default_Values(self))
 
-    self.saveModelButton = QtWidgets.QPushButton(parent)
-    self.saveModelButton.setGeometry(QtCore.QRect(225, 340, 88, 34))
-    self.saveModelButton.setText("Save Model")
-    self.saveModelButton.clicked.connect(lambda: save_KNN_model(self))
-    self.saveModelButton.hide()
+    self.saveModelButtonKNN = QtWidgets.QPushButton(parent)
+    self.saveModelButtonKNN.setGeometry(QtCore.QRect(225, 340, 88, 34))
+    self.saveModelButtonKNN.setText("Save Model")
+    self.saveModelButtonKNN.clicked.connect(lambda: save_KNN_model(self))
+    self.saveModelButtonKNN.hide()
 
     self.loadModelButton = QtWidgets.QPushButton(parent)
     self.loadModelButton.setGeometry(QtCore.QRect(5, 375, 88, 34))
     self.loadModelButton.setText("Load Model")
     self.loadModelButton.clicked.connect(lambda: load_KNN_model(self))
 
-    self.loadedModelLabel = QtWidgets.QLabel(parent)
-    self.loadedModelLabel.setGeometry(QtCore.QRect(100, 375, 100, 34))
-    self.loadedModelLabel.hide()
+    self.loadedModelLabelKNN = QtWidgets.QLabel(parent)
+    self.loadedModelLabelKNN.setGeometry(QtCore.QRect(100, 375, 100, 34))
+    self.loadedModelLabelKNN.hide()
 
     self.applyKNNButton = QtWidgets.QPushButton(parent)
     self.applyKNNButton.setGeometry(QtCore.QRect(5, 420, 88, 34))
@@ -135,7 +135,7 @@ def run_KNN_training(self):
         self.KNNData.class_report = cls_report
         self.KNNData.confusion_matrix = conf_matrix
         set_KNN_info(self)
-        self.saveModelButton.show()
+        self.saveModelButtonKNN.show()
         self.viewTreeButton.show()
         self.viewCMButtonKNN.show()
 
@@ -147,7 +147,7 @@ def save_KNN_model(self):
         return
     options = QFileDialog.Options()
     file_path, _ = QFileDialog.getSaveFileName(self.window, 
-                                               "Save Decision Tree Model",
+                                               "Save KNN Model",
                                                "",
                                                "Pickle Files (*.pkl);;All Files (*)",
                                                options=options)
@@ -172,8 +172,8 @@ def load_KNN_model(self):
                 classifier = pickle.load(file)
             self.KNNData.classifier = classifier
             QMessageBox.information(self.window, "Success", f"Model loaded from {file_path}")
-            self.loadedModelLabel.setText(file_path)
-            self.loadedModelLabel.show()
+            self.loadedModelLabelKNN.setText(file_path)
+            self.loadedModelLabelKNN.show()
             QMessageBox.warning(self.window, "Important", "Be mindful that models must be used in a dataset with same features as the one it was trained on.")
         except Exception as e:
             QMessageBox.critical(self.window, "Error", f"Failed to load model: {str(e)}")
@@ -204,11 +204,11 @@ def apply_KNN_over_dataset(self):
         self.predictedDFInfo.setGeometry(self.KNNInfoData.geometry())
         self.predictedDFInfo.setStyleSheet("border: 1px solid black;")
 
-        self.savePredictedDFButton = QPushButton(parent = self.KNNInfoData.parent())
-        self.savePredictedDFButton.setGeometry(self.saveModelButton.geometry())
-        self.savePredictedDFButton.clicked.connect(lambda: save_data(self, self.current_dataframe))
-        self.savePredictedDFButton.setText("Save DF")
-        self.savePredictedDFButton.show()
+        self.savePredictedDFButtonKNN = QPushButton(parent = self.KNNInfoData.parent())
+        self.savePredictedDFButtonKNN.setGeometry(self.saveModelButtonKNN.geometry())
+        self.savePredictedDFButtonKNN.clicked.connect(lambda: save_data(self, self.current_dataframe))
+        self.savePredictedDFButtonKNN.setText("Save DF")
+        self.savePredictedDFButtonKNN.show()
         
         df = self.current_dataframe
         
