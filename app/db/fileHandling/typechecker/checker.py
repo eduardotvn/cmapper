@@ -12,10 +12,10 @@ def convert_to_iso_timestamp(datetime_str):
         except ValueError:
             return None
     return iso_timestamp
-        
+
 def is_date(string):
     try:
-        parse(string)
+        parse(string, fuzzy=False)
         return True
     except ValueError:
         return False
@@ -26,21 +26,20 @@ def is_bool(string):
 def is_float(string):
     try:
         float(string)
-        return True
+        return '.' in string or 'e' in string.lower()
     except ValueError:
         return False
 
 def sqlTypeReturn(v) -> str:
-
-    if v.isdigit():
+    if is_bool(v):
+        return "BOOLEAN"
+    elif is_float(v):
+        return "REAL"
+    elif v.isdigit():
         return "INTEGER"
     elif is_date(v):
         return "TIMESTAMP"
-    elif is_float(v):
-        return "REAL"
-    elif is_bool(v): 
-        return "BOOLEAN"
-    elif type(v) == str: 
+    elif isinstance(v, str): 
         return "TEXT"
     else: 
         return "UNKNOWN"

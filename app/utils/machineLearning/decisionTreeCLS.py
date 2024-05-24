@@ -10,7 +10,7 @@ def apply_dt(dataframe, target, random_state, test_size):
 
         X = df.drop(columns = [target], axis=1)  
         y = df[target]  
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size/100, random_state=random_state)
 
         clf = DecisionTreeClassifier(random_state=42)
 
@@ -19,7 +19,7 @@ def apply_dt(dataframe, target, random_state, test_size):
         y_pred = clf.predict(X_test)
 
         accuracy = accuracy_score(y_test, y_pred)
-        f1 = f1_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred, average='weighted')
         cr = classification_report(y_test, y_pred)
         cm = confusion_matrix(y_test, y_pred)
         tree = clf.tree_

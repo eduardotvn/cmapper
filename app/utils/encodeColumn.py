@@ -2,6 +2,7 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder, OrdinalEncoder
 import pandas as pd 
 
 def encode_column(df, col, encoder):
+    df[col] = df[col].str.strip()
     if encoder == "Label Encoder":
         label_encoder = LabelEncoder()
         df[col] = label_encoder.fit_transform(df[col])

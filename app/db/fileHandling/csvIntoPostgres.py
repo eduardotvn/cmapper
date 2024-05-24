@@ -37,6 +37,7 @@ def get_csv_info(url):
             for i, value in enumerate(row):
                 if sqlTypeReturn(value) == "UKNOWN":
                     raise TypeError("Not a supported variable type")
+                print(i)
                 column_types[i] = sqlTypeReturn(value)
 
     with open(url, 'r') as file:
@@ -59,6 +60,8 @@ def try_table_creation(tableName : str, url : str) -> bool:
 
         col_names, col_types, data = get_csv_info(url)
 
+        print(col_names, col_types)
+
         columns_for_creation = [f'"{col_name}" {col_type}' for col_name, col_type in zip(col_names, col_types)]
         columns_for_insertion = [f'"{col_name}"' for col_name in col_names]
 
@@ -67,6 +70,7 @@ def try_table_creation(tableName : str, url : str) -> bool:
             {', '.join(columns_for_creation)}
         )
         """
+
         cur.execute(create_table_query)
         conn.commit()
 
