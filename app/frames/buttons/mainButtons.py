@@ -9,6 +9,7 @@ from frames.dialogs.dbHandlers.deleteRowDialog import Ui_DeleteDialog
 from frames.dialogs.dbHandlers.createTableDialog import Ui_CreateTableDialog
 from frames.dialogs.dbHandlers.confirmDeleteDialog import Ui_ConfirmDeleteDialog
 from frames.dialogs.dbHandlers.updateDataDialog import Ui_UpdateDataDialog
+from frames.dialogs.aboutCmapper import Ui_AboutDialog
 
 def refresh_db_visualization(self, tableName):
 
@@ -67,6 +68,12 @@ def run_creation_dialog(self):
     self.CDialog.setupUi(self.Creatrion_Dialog)
     self.CDialog.main_window = self
     self.Creatrion_Dialog.show()
+
+def run_about_dialog(self):
+    self.About_Dialog = QtWidgets.QDialog()
+    self.AboutDialog = Ui_AboutDialog()
+    self.AboutDialog.setupUi(self.About_Dialog)
+    self.About_Dialog.show()
 
 def run_choose_container_dialog(self):
     self.Choose_Container_Dialog = QtWidgets.QDialog()

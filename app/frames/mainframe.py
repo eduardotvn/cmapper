@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog, run_about_dialog
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from PyQt5.QtWidgets import QTableWidgetItem
@@ -167,6 +167,7 @@ class Ui_MainWindow(object):
 
         self.actionAbout_Cmapper = QtWidgets.QAction(MainWindow)
         self.actionAbout_Cmapper.setObjectName("actionAbout_Cmapper")
+        self.actionAbout_Cmapper.triggered.connect(lambda: run_about_dialog(self))
 
         self.actionManual = QtWidgets.QAction(MainWindow)
         self.actionManual.setObjectName("actionManual")
