@@ -12,17 +12,18 @@ def load_dataframe_edit_feature(self, parent):
     self.CorrelationMatrixGB = QtWidgets.QGroupBox(parent)
     self.CorrelationMatrixGB.setGeometry(QtCore.QRect(210, 30, 811, 521))
     self.CorrelationMatrixGB.setTitle("")
+    self.CorrelationMatrixGB.setObjectName("CorrelationMatrixGB")
 
     self.tablesOptions = QtWidgets.QComboBox(self.CorrelationMatrixGB)
     self.tablesOptions.setGeometry(QtCore.QRect(620, 5, 161, 32))
     self.tablesOptions.setObjectName("tablesOptions")
     self.tablesOptions.currentIndexChanged.connect(self.set_dataframe_table)
 
-    self.CorrelationMatrixGB.setObjectName("CorrelationMatrixGB")
     self.textEdit = QtWidgets.QTextEdit(self.CorrelationMatrixGB)
     self.textEdit.setGeometry(QtCore.QRect(20, 40, 271, 461))
     self.textEdit.setObjectName("textEdit")
     self.textEdit.setReadOnly(True)
+    self.textEdit.setStyleSheet("border: 1px solid black;")
 
     self.DataOptions = QtWidgets.QGroupBox(self.CorrelationMatrixGB)
     self.DataOptions.setGeometry(QtCore.QRect(320, 40, 461, 461))
@@ -34,6 +35,7 @@ def load_dataframe_edit_feature(self, parent):
 
     self.DFInfoText = QtWidgets.QTextEdit(self.DataOptions)
     self.DFInfoText.setGeometry(QtCore.QRect(10, 40, 441, 191))
+    self.DFInfoText.setStyleSheet("border: 1px solid black;")
 
     self.DropColumnButton = QtWidgets.QPushButton(self.DataOptions)
     self.DropColumnButton.setGeometry(QtCore.QRect(30, 240, 88, 34))
