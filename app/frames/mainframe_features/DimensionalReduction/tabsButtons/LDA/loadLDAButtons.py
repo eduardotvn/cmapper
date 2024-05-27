@@ -30,8 +30,16 @@ def load_LDA_buttons(self, parent):
     self.targetColCB.setGeometry(QtCore.QRect(160, 100, 150, 30))
     self.targetColCB.addItems(self.current_dataframe.columns.tolist())
 
+    self.ignoreColLabel = QtWidgets.QLabel(parent)
+    self.ignoreColLabel.setGeometry(QtCore.QRect(5,140, 100, 30))
+    self.ignoreColLabel.setText("Ignore Column")
+
+    self.ignoreColOptions = QtWidgets.QComboBox(parent)
+    self.ignoreColOptions.setGeometry(QtCore.QRect(160, 140, 150, 30))
+    self.ignoreColOptions.addItems(["None"] + self.current_dataframe.columns.tolist())
+
     self.generateLDAButton = QtWidgets.QPushButton(parent)
-    self.generateLDAButton.setGeometry(QtCore.QRect(222,140, 88,34))
+    self.generateLDAButton.setGeometry(QtCore.QRect(222,180, 88,34))
     self.generateLDAButton.setText("Generate")
     self.generateLDAButton.clicked.connect(lambda: generate_LDA_information(self))
 
@@ -52,32 +60,32 @@ def load_LDA_buttons(self, parent):
     self.accLabel = QtWidgets.QLabel(parent)
     self.accLabel.setGeometry(QtCore.QRect(350, 230, 250, 30))
     
-    if self.processed_dataframe is not None: 
+    if self.current_dataframe_type is not None: 
         self.populate_pca_table()
 
 def run_plot_widget(self):
-    if self.processed_dataframe is None:
+    if self.current_dataframe is None:
         QMessageBox.critical(self.window, "Error", "No processed dataframe to be plotted")
         return 
-    if 'Predictions' in self.processed_dataframe.columns:
-        if len(self.processed_dataframe.columns.tolist()) == 3:
-            labels = self.processed_dataframe['Predictions']
-            data = self.processed_dataframe.drop(columns=['Predictions'])
+    if 'Predictions' in self.current_dataframe.columns:
+        if len(self.current_dataframe.columns.tolist()) == 3:
+            labels = self.current_dataframe['Predictions']
+            data = self.current_dataframe.drop(columns=['Predictions'])
             plot_widget = PlotWidget(data, labels=labels)
-        elif len(self.processed_dataframe.columns.tolist()) == 4: 
-            labels = self.processed_dataframe['Predictions']
-            data = self.processed_dataframe.drop(columns=['Predictions'])
+        elif len(self.current_dataframe.columns.tolist()) == 4: 
+            labels = self.current_dataframe['Predictions']
+            data = self.current_dataframe.drop(columns=['Predictions'])
             plot_widget = PlotWidget(data, labels=labels, plot_type='3D')
         else:
-            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.current_dataframe.columns.tolist()) - 1} features")
             return 
     else:
-        if len(self.processed_dataframe.columns.tolist()) == 2:
-            plot_widget = PlotWidget(self.processed_dataframe)
-        elif len(self.processed_dataframe.columns.tolist()) == 3:
-            plot_widget = PlotWidget(self.processed_dataframe, plot_type='3D')
+        if len(self.current_dataframe.columns.tolist()) == 2:
+            plot_widget = PlotWidget(self.current_dataframe)
+        elif len(self.current_dataframe.columns.tolist()) == 3:
+            plot_widget = PlotWidget(self.current_dataframe, plot_type='3D')
         else:
-            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.current_dataframe.columns.tolist()) - 1} features")
             return 
     plot_widget.exec_()
 
@@ -87,6 +95,7 @@ def generate_LDA_information(self):
     dataframe = self.current_dataframe.copy()
     num_components = self.numComponentsInputLDA.text()
     scaler = self.scalerOptions.currentText()
+    ignoreCol = self.ignoreColOptions.currentText()
 
     if num_components == '':
         QMessageBox.warning(self.window, "Invalid value", "Insert a valid number of components")
@@ -96,14 +105,17 @@ def generate_LDA_information(self):
         return 
     num_components = int(num_components)
 
-    results, acc, err = apply_lda(dataframe, num_components, scaler, target)
-
+    if ignoreCol != "None":
+        results, acc, err = apply_lda(dataframe.drop(ignoreCol), num_components, scaler, target)
+    else: 
+        results, acc, err = apply_lda(dataframe, num_components, scaler, target)
+        
     if err is not None:
         QMessageBox.critical(self.window, "Error", f"{str(err)}")
     else: 
         dataframe['Predictions'] = results
         dataframe = dataframe.drop(columns=[target])
-        self.processed_dataframe = dataframe
-        self.processed_dataframe_type = "LDA"
+        self.current_dataframe = dataframe
+        self.current_dataframe_type = "LDA"
         self.accLabel.setText(f"Accuracy: {acc:.4f}")
         self.populate_pca_table()

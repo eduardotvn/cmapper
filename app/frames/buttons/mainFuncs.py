@@ -50,8 +50,8 @@ def save_data(self, dataframe):
         print("No file selected")
 
 def run_save_processed_df(self):
-    if self.processed_dataframe is None: 
+    if self.current_dataframe is None: 
         QMessageBox.warning(self.window, "Error", "Generate a processed database first.")
         return 
     else: 
-        save_data(self, self.processed_dataframe)
+        save_data(self, self.current_dataframe)

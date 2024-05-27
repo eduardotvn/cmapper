@@ -24,13 +24,21 @@ def load_pca_buttons(self, parent):
     self.scalerOptions.setGeometry(QtCore.QRect(160, 70, 150, 30))
     self.scalerOptions.addItems(["Standard", "MinMax", "MaxAbs"])
 
+    self.ignoreColLabel = QtWidgets.QLabel(parent)
+    self.ignoreColLabel.setGeometry(QtCore.QRect(5,110, 100, 30))
+    self.ignoreColLabel.setText("Ignore Column")
+
+    self.ignoreColOptions = QtWidgets.QComboBox(parent)
+    self.ignoreColOptions.setGeometry(QtCore.QRect(160, 110, 150, 30))
+    self.ignoreColOptions.addItems(["None"] + self.current_dataframe.columns.tolist())
+
     self.generatePCAButton = QtWidgets.QPushButton(parent)
-    self.generatePCAButton.setGeometry(QtCore.QRect(222,110, 88,34))
+    self.generatePCAButton.setGeometry(QtCore.QRect(222,150, 88,34))
     self.generatePCAButton.setText("Generate")
     self.generatePCAButton.clicked.connect(lambda: generate_pca_information(self))
 
     self.kmeansPCAButton = QtWidgets.QPushButton(parent)
-    self.kmeansPCAButton.setGeometry(QtCore.QRect(222,150, 88,34))
+    self.kmeansPCAButton.setGeometry(QtCore.QRect(222,190, 88,34))
     self.kmeansPCAButton.setText("K-Means")
     self.kmeansPCAButton.clicked.connect(lambda: run_clusters_dialog(self))
 
@@ -51,18 +59,18 @@ def load_pca_buttons(self, parent):
     self.evrLabel = QtWidgets.QLabel(parent)
     self.evrLabel.setGeometry(QtCore.QRect(350, 230, 250, 30))
     
-    if self.processed_dataframe is not None: 
+    if self.current_dataframe_type is not None: 
         self.populate_pca_table()
 
 def generate_pca_information(self):
     scaler = self.scalerOptions.currentText()
+
+    ignoreCol = self.ignoreColOptions.currentText()
+
     if self.numComponentsInputPCA.text() == '':
         n_comps = 0
-        print("Here")
     else:
         n_comps = int(self.numComponentsInputPCA.text())
-
-    print(n_comps)
 
     if n_comps > len(self.current_dataframe.columns.tolist()) or n_comps <= 0:        
             QMessageBox.warning(self.window, "Warning", f"Choose a value between 1 and {len(self.current_dataframe.columns.tolist())}")
@@ -71,11 +79,19 @@ def generate_pca_information(self):
             QMessageBox.warning(self.window, "Warning", "Choose a scaler")
             return 
 
-    df, evr, error = apply_pca(self.current_dataframe, scaler, n_comps)
+    dataframe = self.current_dataframe.copy()
+
+    if ignoreCol != "None":
+        dataframe.drop(columns=[ignoreCol])
+
+    df, evr, error = apply_pca(dataframe, scaler, n_comps)
+
+    if ignoreCol != "None":
+        df[ignoreCol] = dataframe[ignoreCol]
 
     if df is not None: 
-        self.processed_dataframe = df 
-        self.processed_dataframe_type = "PCA"
+        self.current_dataframe = df 
+        self.current_dataframe_type = "PCA"
         self.evrLabel.setText(f"Explained Variance Ratio: {evr[0]:.4f}")
         self.populate_pca_table()
     elif error: 
@@ -83,7 +99,7 @@ def generate_pca_information(self):
 
 
 def run_clusters_dialog(self):
-    if self.processed_dataframe_type == "PCA":
+    if self.current_dataframe_type == "PCA":
         self.Clusters_Dialog = QtWidgets.QDialog()
         self.CluDialog = Ui_ClustersDialog()
         self.CluDialog.setupUi(self.Clusters_Dialog)
@@ -93,28 +109,28 @@ def run_clusters_dialog(self):
         QMessageBox.warning(self.window, "Error", "Generate a PCA dataframe before proceeding.")
 
 def run_plot_widget(self):
-    if self.processed_dataframe is None:
+    if self.current_dataframe is None:
         QMessageBox.critical(self.window, "Error", "No processed dataframe to be plotted")
         return 
-    if 'Clusters' in self.processed_dataframe.columns:
-        if len(self.processed_dataframe.columns.tolist()) == 3:
-            labels = self.processed_dataframe['Clusters']
-            data = self.processed_dataframe.drop(columns=['Clusters'])
+    if 'Clusters' in self.current_dataframe.columns:
+        if len(self.current_dataframe.columns.tolist()) == 3:
+            labels = self.current_dataframe['Clusters']
+            data = self.current_dataframe.drop(columns=['Clusters'])
             plot_widget = PlotWidget(data, labels=labels)
-        elif len(self.processed_dataframe.columns.tolist()) == 4: 
-            labels = self.processed_dataframe['Clusters']
-            data = self.processed_dataframe.drop(columns=['Clusters'])
+        elif len(self.current_dataframe.columns.tolist()) == 4: 
+            labels = self.current_dataframe['Clusters']
+            data = self.current_dataframe.drop(columns=['Clusters'])
             plot_widget = PlotWidget(data, labels=labels, plot_type='3D')
         else:
-            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.current_dataframe.columns.tolist()) - 1} features")
             return 
     else:
-        if len(self.processed_dataframe.columns.tolist()) == 2:
-            plot_widget = PlotWidget(self.processed_dataframe)
-        elif len(self.processed_dataframe.columns.tolist()) == 3:
-            plot_widget = PlotWidget(self.processed_dataframe, plot_type='3D')
+        if len(self.current_dataframe.columns.tolist()) == 2:
+            plot_widget = PlotWidget(self.current_dataframe)
+        elif len(self.current_dataframe.columns.tolist()) == 3:
+            plot_widget = PlotWidget(self.current_dataframe, plot_type='3D')
         else:
-            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+            QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.current_dataframe.columns.tolist()) - 1} features")
             return 
     plot_widget.exec_()
 

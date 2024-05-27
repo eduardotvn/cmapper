@@ -42,8 +42,8 @@ class Ui_ClustersDialog(object):
 
 
     def display_elbow_method(self):
-        if self.parent.processed_dataframe_type == "PCA":
-            df = self.parent.processed_dataframe.copy()
+        if self.parent.current_dataframe_type == "PCA":
+            df = self.parent.current_dataframe.copy()
             wcss, k = elbow_method(df)
             
             print(wcss, k)
@@ -53,7 +53,7 @@ class Ui_ClustersDialog(object):
             self.elbow_plot_widget.show()
             
     def generate_button(self, window):
-        if self.parent.processed_dataframe_type == "PCA":
+        if self.parent.current_dataframe_type == "PCA":
             num_clusters = self.NumClustersInput.text()
             if num_clusters == '':
                 QMessageBox.warning(self.parent.window, "Invalid number", "Input a valid number of clusters")
@@ -64,8 +64,8 @@ class Ui_ClustersDialog(object):
                 QMessageBox.warning(self.parent.window, "Invalid number", "Choose a positive number")
                 return 
             else:
-                clustered_df = apply_kmeans(self.parent.processed_dataframe, num_clusters)
-                self.parent.processed_dataframe = clustered_df
+                clustered_df = apply_kmeans(self.parent.current_dataframe, num_clusters)
+                self.parent.current_dataframe = clustered_df
                 self.parent.populate_pca_table()
                 window.close()
 

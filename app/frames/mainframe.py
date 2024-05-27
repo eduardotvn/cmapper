@@ -20,9 +20,8 @@ class Ui_MainWindow(object):
         self.running_feature = None
 
         self.current_dataframe = None
-        self.processed_dataframe = None
         self.clusterized_dataframe = None  
-        self.processed_dataframe_type = None
+        self.current_dataframe_type = None
         self.clusterized_dataframe_type = None 
 
     def setupUi(self, MainWindow):
@@ -42,6 +41,7 @@ class Ui_MainWindow(object):
         self.DBVisualization.setObjectName("DBVisualization")
         self.DBVisualization.setColumnCount(0)
         self.DBVisualization.setRowCount(0)
+        self.DBVisualization.setStyleSheet("border: 1px solid black;")
 
         self.FilterInput = QtWidgets.QLineEdit(self.VisualizationGB)
         self.FilterInput.setGeometry(QtCore.QRect(90, 390, 231, 41))
@@ -262,8 +262,7 @@ class Ui_MainWindow(object):
 
         self.textEdit.setReadOnly(True)
         self.current_dataframe = df
-        self.processed_dataframe = None
-        self.processed_dataframe_type = None
+        self.current_dataframe_type = None
         self.set_current_dataframe_info()
 
     def set_current_dataframe_info(self):
@@ -272,14 +271,14 @@ class Ui_MainWindow(object):
             self.DFInfoText.setText(f"Current columns: {cols}, TOTAL: {len(cols)}")
 
     def populate_pca_table(self):
-        if self.processed_dataframe_type == "PCA":
+        if self.current_dataframe_type == "PCA":
             target = self.PCAInfoData
-        elif self.processed_dataframe_type == "LDA":
+        elif self.current_dataframe_type == "LDA":
             target = self.LDAInfoData
-        elif self.processed_dataframe_type == "TSNE":
+        elif self.current_dataframe_type == "TSNE":
             target = self.TSNEInfoData
 
-        df = self.processed_dataframe.copy()
+        df = self.current_dataframe.copy()
         target.clearContents()
         target.setRowCount(df.shape[0]) 
         target.setColumnCount(df.shape[1])  

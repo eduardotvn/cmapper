@@ -70,7 +70,7 @@ def load_TSNE_buttons(self, parent):
     self.saveDFButton.setText("Save DF")
     self.saveDFButton.clicked.connect(lambda: run_save_processed_df(self))
 
-    if self.processed_dataframe is not None: 
+    if self.current_dataframe_type is not None: 
         self.populate_pca_table()
 
 
@@ -108,8 +108,8 @@ def generate_TSNE_information(self):
         resulting_df, error = apply_TSNE(self.current_dataframe, num_components, scaler, rand_state, perplexity, iterations)
 
         if resulting_df is not None: 
-            self.processed_dataframe = resulting_df
-            self.processed_dataframe_type = "TSNE"
+            self.current_dataframe = resulting_df
+            self.current_dataframe_type = "TSNE"
             self.populate_pca_table()
         else:
             QMessageBox.critical(self.window, "Error", f"{str(error)}")
@@ -123,14 +123,14 @@ def load_default_values(self):
     self.numIterationInput.setText("300")
 
 def run_plot_widget(self):
-    if self.processed_dataframe is None:
+    if self.current_dataframe is None:
         QMessageBox.critical(self.window, "Error", "No processed dataframe to be plotted")
         return 
-    if len(self.processed_dataframe.columns.tolist()) == 2:
-        plot_widget = PlotWidget(self.processed_dataframe)
-    elif len(self.processed_dataframe.columns.tolist()) == 3:
-        plot_widget = PlotWidget(self.processed_dataframe, plot_type='3D')
+    if len(self.current_dataframe.columns.tolist()) == 2:
+        plot_widget = PlotWidget(self.current_dataframe)
+    elif len(self.current_dataframe.columns.tolist()) == 3:
+        plot_widget = PlotWidget(self.current_dataframe, plot_type='3D')
     else:
-        QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.processed_dataframe.columns.tolist()) - 1} features")
+        QMessageBox.warning(self.window, "Error", f"Not possible to plot with {len(self.current_dataframe.columns.tolist()) - 1} features")
         return 
     plot_widget.exec_()
