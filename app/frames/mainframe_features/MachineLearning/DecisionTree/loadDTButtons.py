@@ -117,13 +117,14 @@ def run_dt_training(self):
     r_state = self.randomStateInputDT.text()
     test_size = self.testSizeInputDT.text()
 
-    if r_state == '' or int(r_state) < 0:
+    if not r_state.isdigit() or int(r_state) < 0:
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid random state")
         return
-    if test_size == '' or int(test_size) <= 0 or int(test_size) >= 100:
+
+    if not test_size.isdigit() or int(test_size) <= 0 or int(test_size) >= 100:
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid test size")
-        return 
-    
+        return
+
     r_state = int(r_state)
     test_size = int(test_size)
 

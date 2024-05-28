@@ -67,12 +67,9 @@ def generate_pca_information(self):
 
     ignoreCol = self.ignoreColOptions.currentText()
 
-    if self.numComponentsInputPCA.text() == '':
-        n_comps = 0
-    else:
-        n_comps = int(self.numComponentsInputPCA.text())
+    n_comps = self.numComponentsInputPCA.text()
 
-    if n_comps > len(self.current_dataframe.columns.tolist()) or n_comps <= 0:        
+    if not n_comps.isdigit() or n_comps > len(self.current_dataframe.columns.tolist()) or n_comps <= 0:        
             QMessageBox.warning(self.window, "Warning", f"Choose a value between 1 and {len(self.current_dataframe.columns.tolist())}")
             return
     if scaler is None: 

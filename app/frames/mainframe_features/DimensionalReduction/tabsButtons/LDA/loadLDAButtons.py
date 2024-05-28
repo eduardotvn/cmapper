@@ -93,22 +93,20 @@ def run_plot_widget(self):
 def generate_LDA_information(self):
     target = self.targetColCB.currentText()
     dataframe = self.current_dataframe.copy()
-    num_components = self.numComponentsInputLDA.text()
+    n_comps = self.numComponentsInputLDA.text()
     scaler = self.scalerOptions.currentText()
     ignoreCol = self.ignoreColOptions.currentText()
 
-    if num_components == '':
-        QMessageBox.warning(self.window, "Invalid value", "Insert a valid number of components")
-        return
-    elif int(num_components) > len(self.current_dataframe.columns.tolist()) or int(num_components) <= 0:
+    if not n_comps.isdigit() or n_comps == '' or int(n_comps) > len(self.current_dataframe.columns.tolist()) or int(n_comps) <= 0:
         QMessageBox.warning(self.window, "Invalid value", "Insert a valid number of components")
         return 
-    num_components = int(num_components)
+
+    n_comps = int(n_comps)
 
     if ignoreCol != "None":
-        results, acc, err = apply_lda(dataframe.drop(ignoreCol), num_components, scaler, target)
+        results, acc, err = apply_lda(dataframe.drop(ignoreCol), n_comps, scaler, target)
     else: 
-        results, acc, err = apply_lda(dataframe, num_components, scaler, target)
+        results, acc, err = apply_lda(dataframe, n_comps, scaler, target)
         
     if err is not None:
         QMessageBox.critical(self.window, "Error", f"{str(err)}")

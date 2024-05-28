@@ -109,10 +109,10 @@ def run_LGR_training(self):
     r_state = self.randomStateInputLGR.text()
     test_size = self.testSizeInputLGR.text()
 
-    if r_state == '' or int(r_state) < 0:
+    if not r_state.isdigit() or r_state == '' or int(r_state) < 0:
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid random state")
         return
-    if test_size == '' or int(test_size) <= 0 or int(test_size) >= 100:
+    if not test_size.isdigit() or test_size == '' or int(test_size) <= 0 or int(test_size) >= 100:
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid test size")
         return 
     

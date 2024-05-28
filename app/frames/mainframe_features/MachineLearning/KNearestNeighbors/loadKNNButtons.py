@@ -117,13 +117,13 @@ def run_KNN_training(self):
     test_size = self.testSizeInputKNN.text()
     numNeighbors = self.numNeighborsInputKNN.text()
 
-    if r_state == '' or int(r_state) < 0:
+    if not r_state.isdigit() or r_state == '' or int(r_state) < 0:
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid random state")
         return
-    if test_size == '' or int(test_size) <= 0 or int(test_size) >= 100:
+    if not test_size.isdigit() or test_size == '' or int(test_size) <= 0 or int(test_size) >= 100:
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid test size")
         return 
-    if numNeighbors == '':
+    if not numNeighbors.isdigit() or numNeighbors == '':
         QMessageBox.warning(self.window, "Invalid Value", "Input a valid neighbors number")
         return         
 

@@ -77,7 +77,7 @@ def load_TSNE_buttons(self, parent):
 def generate_TSNE_information(self):
     try:
         num_components = self.numComponentsInputTSNE.text()
-        if num_components == '' or int(num_components) <= 0 or int(num_components) > len(self.current_dataframe.columns.tolist()):
+        if not num_components.isdigit() or num_components == '' or int(num_components) <= 0 or int(num_components) > len(self.current_dataframe.columns.tolist()):
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for number of components")
             return 
 
@@ -85,18 +85,18 @@ def generate_TSNE_information(self):
 
         rand_state = self.randomStateInput.text()
 
-        if rand_state == '' or int(rand_state) < 0:
+        if not rand_state.isdigit() or rand_state == '' or int(rand_state) < 0:
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for number for random state")
             return 
 
         perplexity = self.perplexityInput.text()
 
-        if perplexity == '' or int(perplexity) < 0:
+        if not perplexity.isdigit() or perplexity == '' or int(perplexity) < 0:
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for perplexity")
             return
 
         iterations = self.numIterationInput.text()
-        if iterations == '' or int(perplexity) < 0:
+        if not iterations.isdigit() or iterations == '' or int(perplexity) < 0:
             QMessageBox.warning(self.window, "Value Error", "Enter a valid value for number of iterations")
             return 
         
