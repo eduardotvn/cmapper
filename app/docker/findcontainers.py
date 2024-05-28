@@ -3,7 +3,7 @@ import re
 
 def find_running_postgres_containers():
     try:
-        output = subprocess.check_output(["sudo" ,"docker" , "ps", "-a"], text=True)
+        output = subprocess.check_output(["docker" , "ps", "-a"], text=True)
 
         postgres_containers = re.findall(r'.*postgres.*', output)
         
@@ -14,7 +14,7 @@ def find_running_postgres_containers():
 
 def run_container(container_name):
     try: 
-        subprocess.run(['sudo', 'docker','start', f'{container_name}'], text=True)
+        subprocess.run(['docker','start', f'{container_name}'], text=True)
         return True 
     
     except subprocess.CalledProcessError as e:
