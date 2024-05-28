@@ -35,7 +35,7 @@ class DataFrameLinePlotWidget(QtWidgets.QWidget):
 
 def show_line_options(self):
     self.lineGB = QtWidgets.QGroupBox(self.PlottingGB)
-    self.lineGB.setGeometry(5, 170, 250, 300)
+    self.lineGB.setGeometry(5, 140, 250, 300)
     self.lineGB.setStyleSheet("QGroupBox { border: 0; }")
 
     self.targetColLabel = QtWidgets.QLabel(self.lineGB)

@@ -39,7 +39,7 @@ class DataFrameBarPlotWidget(QtWidgets.QWidget):
 
 def show_bar_options(self):
     self.barGB = QtWidgets.QGroupBox(self.PlottingGB)
-    self.barGB.setGeometry(5, 170, 250, 300)
+    self.barGB.setGeometry(5, 140, 250, 300)
     self.barGB.setStyleSheet("QGroupBox { border: 0; }")
 
     self.targetColLabel = QtWidgets.QLabel(self.barGB)

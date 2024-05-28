@@ -35,7 +35,7 @@ class PlotCanvas(FigureCanvas):
         print(f"X_test: {X_test}\ny_test: {y_test}\ny_pred: {y_pred}")
         print(f"X_test len: {len(X_test)}\ny_test len:{len(y_test)}\ny_pred len: {len(y_pred)}")
 
-        self.ax.clear()  # Clear previous plots if any
+        self.ax.clear()  
         self.ax.scatter(X_test, y_test, color='blue', label='Test Data')
         self.ax.plot(X_test, y_pred, color='red', linewidth=2, label='Linear Regression Model')
         self.ax.set_xlabel('X_test')

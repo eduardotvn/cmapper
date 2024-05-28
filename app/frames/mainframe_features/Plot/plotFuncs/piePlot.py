@@ -34,7 +34,7 @@ class DataFramePiePlotWidget(QtWidgets.QWidget):
 
 def show_pie_options(self):
     self.pieGB = QtWidgets.QGroupBox(self.PlottingGB)
-    self.pieGB.setGeometry(5, 170, 250, 300)
+    self.pieGB.setGeometry(5, 140, 250, 300)
     self.pieGB.setStyleSheet("QGroupBox { border: 0; }")
 
     self.columnLabel = QtWidgets.QLabel(self.pieGB)

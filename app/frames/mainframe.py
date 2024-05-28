@@ -143,6 +143,7 @@ class Ui_MainWindow(object):
 
         self.actionClose = QtWidgets.QAction(MainWindow)
         self.actionClose.setObjectName("actionClose")
+        self.actionClose.triggered.connect(MainWindow.close)
 
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
@@ -162,9 +163,6 @@ class Ui_MainWindow(object):
         self.actionLoad_CSV = QtWidgets.QAction(MainWindow)
         self.actionLoad_CSV.setObjectName("actionLoad_CSV")
 
-        self.actionRecent = QtWidgets.QAction(MainWindow)
-        self.actionRecent.setObjectName("actionRecent")
-
         self.actionAbout_Cmapper = QtWidgets.QAction(MainWindow)
         self.actionAbout_Cmapper.setObjectName("actionAbout_Cmapper")
         self.actionAbout_Cmapper.triggered.connect(lambda: run_about_dialog(self))
@@ -173,7 +171,6 @@ class Ui_MainWindow(object):
         self.actionManual.setObjectName("actionManual")
 
         self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionRecent)
         self.menuFile.addAction(self.actionClose)
 
         self.menuDatabase.addAction(self.actionSelect_DB)
@@ -282,10 +279,12 @@ class Ui_MainWindow(object):
         target.clearContents()
         target.setRowCount(df.shape[0]) 
         target.setColumnCount(df.shape[1])  
+        target.setHorizontalHeaderLabels(df.columns)
 
         for i in range(df.shape[0]):  
             for j in range(df.shape[1]): 
                 item = QTableWidgetItem(str(df.iloc[i, j]))  
+                item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable) 
                 target.setItem(i, j, item)
 
     def retranslateUi(self, MainWindow):
@@ -314,6 +313,5 @@ class Ui_MainWindow(object):
         self.actionCreate_DB.setText(_translate("MainWindow", "Create Database"))
         self.actionSelect_Docker.setText(_translate("MainWindow", "Select Docker"))
         self.actionLoad_CSV.setText(_translate("MainWindow", "Load File "))
-        self.actionRecent.setText(_translate("MainWindow", "Recent "))
         self.actionAbout_Cmapper.setText(_translate("MainWindow", "About Cmapper"))
         self.actionManual.setText(_translate("MainWindow", "Manual"))
