@@ -33,7 +33,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
 
         self.VisualizationGB = QtWidgets.QGroupBox(self.centralwidget)
-        self.VisualizationGB.setGeometry(QtCore.QRect(210, 0, 811, 521))
+        self.VisualizationGB.setGeometry(QtCore.QRect(210, 0, 811, 531))
         self.VisualizationGB.setObjectName("VisualizationGB")
 
         self.DBVisualization = QtWidgets.QTableWidget(self.VisualizationGB)

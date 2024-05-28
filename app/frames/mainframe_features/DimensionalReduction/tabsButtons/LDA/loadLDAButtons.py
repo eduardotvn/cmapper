@@ -34,9 +34,9 @@ def load_LDA_buttons(self, parent):
     self.ignoreColLabel.setGeometry(QtCore.QRect(5,140, 100, 30))
     self.ignoreColLabel.setText("Ignore Column")
 
-    self.ignoreColOptions = QtWidgets.QComboBox(parent)
-    self.ignoreColOptions.setGeometry(QtCore.QRect(160, 140, 150, 30))
-    self.ignoreColOptions.addItems(["None"] + self.current_dataframe.columns.tolist())
+    self.ignoreColOptionsLDA = QtWidgets.QComboBox(parent)
+    self.ignoreColOptionsLDA.setGeometry(QtCore.QRect(160, 140, 150, 30))
+    self.ignoreColOptionsLDA.addItems(["None"] + self.current_dataframe.columns.tolist())
 
     self.generateLDAButton = QtWidgets.QPushButton(parent)
     self.generateLDAButton.setGeometry(QtCore.QRect(222,180, 88,34))
@@ -95,7 +95,7 @@ def generate_LDA_information(self):
     dataframe = self.current_dataframe.copy()
     n_comps = self.numComponentsInputLDA.text()
     scaler = self.scalerOptions.currentText()
-    ignoreCol = self.ignoreColOptions.currentText()
+    ignoreCol = self.ignoreColOptionsLDA.currentText()
 
     if not n_comps.isdigit() or n_comps == '' or int(n_comps) > len(self.current_dataframe.columns.tolist()) or int(n_comps) <= 0:
         QMessageBox.warning(self.window, "Invalid value", "Insert a valid number of components")

@@ -28,9 +28,9 @@ def load_pca_buttons(self, parent):
     self.ignoreColLabel.setGeometry(QtCore.QRect(5,110, 100, 30))
     self.ignoreColLabel.setText("Ignore Column")
 
-    self.ignoreColOptions = QtWidgets.QComboBox(parent)
-    self.ignoreColOptions.setGeometry(QtCore.QRect(160, 110, 150, 30))
-    self.ignoreColOptions.addItems(["None"] + self.current_dataframe.columns.tolist())
+    self.ignoreColOptionsPCA = QtWidgets.QComboBox(parent)
+    self.ignoreColOptionsPCA.setGeometry(QtCore.QRect(160, 110, 150, 30))
+    self.ignoreColOptionsPCA.addItems(["None"] + self.current_dataframe.columns.tolist())
 
     self.generatePCAButton = QtWidgets.QPushButton(parent)
     self.generatePCAButton.setGeometry(QtCore.QRect(222,150, 88,34))
@@ -65,26 +65,26 @@ def load_pca_buttons(self, parent):
 def generate_pca_information(self):
     scaler = self.scalerOptions.currentText()
 
-    ignoreCol = self.ignoreColOptions.currentText()
+    ignoreCol = self.ignoreColOptionsPCA.currentText()
 
     n_comps = self.numComponentsInputPCA.text()
 
-    if not n_comps.isdigit() or n_comps > len(self.current_dataframe.columns.tolist()) or n_comps <= 0:        
+    if not n_comps.isdigit() or int(n_comps) > len(self.current_dataframe.columns.tolist()) or int(n_comps) <= 0:        
             QMessageBox.warning(self.window, "Warning", f"Choose a value between 1 and {len(self.current_dataframe.columns.tolist())}")
             return
     if scaler is None: 
             QMessageBox.warning(self.window, "Warning", "Choose a scaler")
             return 
-
+    print(ignoreCol)
     dataframe = self.current_dataframe.copy()
-
+    n_comps = int(n_comps)
     if ignoreCol != "None":
-        dataframe.drop(columns=[ignoreCol])
-
-    df, evr, error = apply_pca(dataframe, scaler, n_comps)
-
-    if ignoreCol != "None":
+        df, evr, error = apply_pca(dataframe.drop(columns=[ignoreCol]), scaler, n_comps)
         df[ignoreCol] = dataframe[ignoreCol]
+        print(df[ignoreCol])
+    else:
+        print("Ignored")
+        df, evr, error = apply_pca(dataframe, scaler, n_comps)
 
     if df is not None: 
         self.current_dataframe = df 
