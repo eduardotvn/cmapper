@@ -53,9 +53,31 @@ class Ui_MainWindow(object):
         self.Columns.setObjectName("Columns")
 
         self.Tables = QtWidgets.QComboBox(self.VisualizationGB)
-        self.Tables.setGeometry(QtCore.QRect(540, 5, 231, 41))
+        self.Tables.setGeometry(QtCore.QRect(500, 5, 231, 41))
         self.Tables.setObjectName("Tables")
         self.Tables.currentIndexChanged.connect(self.set_current_table)
+
+        self.AdvancedOptions = QtWidgets.QToolButton(self.VisualizationGB)
+        self.AdvancedOptions.setGeometry(QtCore.QRect(735, 5, 40, 40))
+        self.AdvancedOptions.setText("...")
+
+        self.AdvancedOptionsMenu = QtWidgets.QMenu(self.AdvancedOptions)
+
+        self.AddColumn_Action = QtWidgets.QAction(self.AdvancedOptions)
+        self.AddColumn_Action.setText("Add Column")
+
+        self.SumTables_Action = QtWidgets.QAction(self.AdvancedOptions)
+        self.SumTables_Action.setText("Sum Tables")
+
+        self.DeleteColumn_Action = QtWidgets.QAction(self.AdvancedOptions)
+        self.DeleteColumn_Action.setText("Delete Column")
+
+        self.AdvancedOptionsMenu.addAction(self.AddColumn_Action)
+        self.AdvancedOptionsMenu.addAction(self.SumTables_Action)
+        self.AdvancedOptionsMenu.addAction(self.DeleteColumn_Action)
+        self.AdvancedOptions.setMenu(self.AdvancedOptionsMenu)
+
+        self.AdvancedOptions.setPopupMode(QtWidgets.QToolButton.InstantPopup)
 
         self.SearchLabel = QtWidgets.QLabel(self.VisualizationGB)
         self.SearchLabel.setGeometry(QtCore.QRect(340, 400, 71, 21))
