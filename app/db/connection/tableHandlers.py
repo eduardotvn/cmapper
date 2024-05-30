@@ -35,7 +35,6 @@ def create_table(tableName, tableSchema) -> bool:
         conn.close()
         return True 
     except psycopg2.Error as e:
-        raise psycopg2.Error(f"{e}")
         return False 
 
 def delete_table(tableName) -> bool:
@@ -50,5 +49,4 @@ def delete_table(tableName) -> bool:
         conn.close()
         return True
     except psycopg2.Error as e: 
-        raise psycopg2.Error(f"{e}")
         return False 

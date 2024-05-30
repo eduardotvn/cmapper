@@ -18,4 +18,4 @@ def start_connection(retry_count=5, delay=2):
             print(f"Attempt {attempt+1} failed: {e}")
             last_exception = e
             time.sleep(delay)  
-    return last_exception, None
+            return last_exception, None
