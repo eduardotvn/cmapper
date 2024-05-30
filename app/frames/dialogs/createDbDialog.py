@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from db.fileHandling.csvIntoPostgres import try_table_creation, search_primary_key
 from frames.dialogs.confirmPrimaryKey import Ui_PrimaryKeyConfirm
 
@@ -78,7 +78,10 @@ class Ui_CreateDatabaseFromFile(object):
         if not con: 
             return 
         if self.chosen_file is not None:
-            try_table_creation(dbname, self.chosen_file)
+            success, err = try_table_creation(dbname, self.chosen_file)
+            if err:
+                QMessageBox.warning(CreateDatabaseFromFile, "Error", f"{str(err)}")
+                return 
             cols = search_primary_key(dbname)
             if len(cols) > 0: 
                 self.CKey_Dialog = QtWidgets.QDialog()

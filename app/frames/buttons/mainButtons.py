@@ -65,6 +65,7 @@ def run_db_insertion_dialog(self):
         self.InputData.cols_info = cols_info
         self.InputData.chosen_table = chosen_table
         self.InputData.set_column_name(cols_info[0][0])
+        self.InputData.parent = self 
     except Exception as e: 
         print(e)
         return

@@ -6,6 +6,7 @@ from docker.findcontainers import find_running_postgres_containers
 from .mainframe import Ui_MainWindow
 from .dialogs.warningDocker import Ui_WarningDocker
 import time 
+import os 
 
 class OpenFrame(QMainWindow):
     def __new__(cls):
@@ -39,7 +40,8 @@ class OpenFrame(QMainWindow):
             self.main = Ui_MainWindow()
             self.main.setupUi(self.MainWindow)
             self.MainWindow.show()
-            if len(find_running_postgres_containers()) == 0:
+            containers = [container.split()[-1] for container in find_running_postgres_containers()]
+            if os.getenv('DBNAME') not in containers:
                 self.warningDialog = QtWidgets.QDialog()
                 self.warning = Ui_WarningDocker()
                 self.warning.setupUi(self.warningDialog)

@@ -6,6 +6,7 @@ from db.connection.tableHandlers import create_table
 from db.fileHandling.typechecker.checker import sqlTypeReturn, convert_to_iso_timestamp
 from db.handlers.handlers import select_all_cols
 from dateutil.parser import parse
+from typing import Tuple, Optional
 
 def is_date(string: str) -> bool:
     try:
@@ -25,7 +26,7 @@ def get_csv_info(url: str):
 
     if delimiter is None:
         print("Unable to determine delimiter. Please use either comma (,) or tab (\\t).")
-        return None, None
+        return None, None, None
     
     with open(url, 'r') as file:
         reader = csv.reader(file, delimiter=delimiter)
@@ -50,17 +51,17 @@ def get_csv_info(url: str):
                 if sqlTypeReturn(value) == "TIMESTAMP":
                     row[index] = convert_to_iso_timestamp(value)
             data.append(row)
-
     return column_names, column_types, data
 
-def try_table_creation(tableName : str, url : str) -> bool: 
+def try_table_creation(tableName : str, url : str) -> Tuple[bool, Optional[Exception]]: 
     try:
         _, conn = start_connection()
         cur = conn.cursor() 
 
         col_names, col_types, data = get_csv_info(url)
 
-        print(col_names, col_types)
+        if col_names is None or col_types is None: 
+            return False, Exception("Error: Empty CSV")
 
         columns_for_creation = [f'"{col_name}" {col_type}' for col_name, col_type in zip(col_names, col_types)]
         columns_for_insertion = [f'"{col_name}"' for col_name in col_names]
@@ -87,13 +88,13 @@ def try_table_creation(tableName : str, url : str) -> bool:
 
         cur.close()
         conn.close()
-        return True 
+        return True, None
     except psycopg2.Error as e:
         if conn:
             conn.rollback()
             cur.close()
             conn.close()
-        return False
+        return False, e
  
 
 def search_primary_key(tableName: str):
@@ -129,7 +130,7 @@ def search_primary_key(tableName: str):
     except psycopg2.Error as e:
         return None, e
 
-def turn_column_into_primary_key(tableName: str, column: str) -> bool:
+def turn_column_into_primary_key(tableName: str, column: str) -> Tuple[bool, Optional[Exception]]:
     try:
         _, conn = start_connection()
         cur = conn.cursor()
@@ -153,7 +154,7 @@ def turn_column_into_primary_key(tableName: str, column: str) -> bool:
         cur.close()
         conn.close()
 
-        return True
+        return True, None
 
     except psycopg2.Error as e:
-        return False
+        return False, e

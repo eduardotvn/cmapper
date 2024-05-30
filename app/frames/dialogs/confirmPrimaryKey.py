@@ -39,8 +39,11 @@ class Ui_PrimaryKeyConfirm(object):
     def choose_col(self, PrimaryKeyConfirm):
         try:
             print("col :", self.found_cols[0])
-            if turn_column_into_primary_key(self.chosen_table, self.found_cols[0]):
+            success, err = turn_column_into_primary_key(self.chosen_table, self.found_cols[0][0])
+            if success:
                 print("Succesful")
+            else:
+                QMessageBox.warning(PrimaryKeyConfirm, "Error", f"{str(err)}")
             PrimaryKeyConfirm.close()
         except Exception as e: 
             print(e)

@@ -226,6 +226,10 @@ class Ui_MainWindow(object):
         try: 
             tables = check_tables()
             if len(tables) == 0:
+                self.Tables.clear()
+                self.DBVisualization.clear()
+                self.DBVisualization.setRowCount(0)
+                self.DBVisualization.setColumnCount(0)
                 return 
             self.Tables.currentIndexChanged.disconnect(self.set_current_table)
             self.found_tables = [table[0] for table in tables]

@@ -7,6 +7,7 @@ class Ui_InputData(object):
         self.cols_info = []
         self.chosen_table = None
         self.insertion_schema = []
+        self.parent = None 
 
     def setupUi(self, InputData):
         InputData.setObjectName("InputData")
@@ -57,7 +58,7 @@ class Ui_InputData(object):
                 _, err = insert_table(self.chosen_table, self.insertion_schema)
                 if err is not None:
                     QMessageBox.warning(self.window, "Error", f"{str(err)}")
-                self.refresh_db_visualization()
+                self.parent.run_refresh()
                 InputData.close()
         except Exception as err: 
             QMessageBox.warning(self.window, "Error", f"{str(err)}")

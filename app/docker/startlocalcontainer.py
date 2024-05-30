@@ -7,12 +7,11 @@ def start_postgres_container():
         user = os.getenv('USERNAME')
         password = os.getenv('PASSWORD')
         port = os.getenv('PORT')
-        subprocess.run(["docker", "run", "--name", f"{dbname}", "-p", f"{port}:{port}", "-e", f"POSTGRES_USER={user}", "-e", f"POSTGRES_PASSWORD={password}", "-e", "POSTGRES_DB=postgres_db", "-d", "postgres"], check=True)
+        subprocess.run(["docker", "run", "--name", f"{dbname}", "-p", f"{port}:{port}", "-e", f"POSTGRES_USER={user}", "-e", f"POSTGRES_PASSWORD={password}", "-e", "POSTGRES_DB=cmapper_db", "-d", "postgres"], check=True)
         return True, None  
     except subprocess.CalledProcessError as e:
         print(f"Error starting PostgreSQL container: {e}")
         return False, e 
-
 
 def stop_container(name: str):
     try: 

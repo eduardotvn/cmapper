@@ -33,6 +33,9 @@ class Ui_ConfirmDeleteDialog(object):
             delete_table(self.chosen_table)
             self.parent.set_tables()
             ConfirmDeleteDialog.close()
+            self.parent.run_refresh()
+            if self.chosen_table in self.parent.found_tables:
+                self.parent.found_tables.remove(self.chosen_table)
         except Exception as e:
             QMessageBox.warning(ConfirmDeleteDialog, "Error", f"{str(e)}")
 
