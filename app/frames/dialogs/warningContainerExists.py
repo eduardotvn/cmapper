@@ -1,5 +1,3 @@
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -23,5 +21,5 @@ class Ui_ContainerExistsDialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Warning"))
-        self.warningLabel.setText(_translate("Dialog", "A postgres image is already running in this machine: \"postgrescmapper\""))
+        self.warningLabel.setText(_translate("Dialog", "A postgres image is already running in this machine: \"cmapper_db\""))
         self.okButton.setText(_translate("Dialog", "Ok"))

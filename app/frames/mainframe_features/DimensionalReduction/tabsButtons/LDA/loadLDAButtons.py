@@ -102,7 +102,7 @@ def generate_LDA_information(self):
 
     n_comps = int(n_comps)
 
-    results, acc, err = None
+    results, acc, err = None, None, None 
 
     if ignoreCol != "None":
         results, acc, err = apply_lda(dataframe.drop(ignoreCol), n_comps, scaler, target)

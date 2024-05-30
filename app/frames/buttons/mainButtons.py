@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from .mainFuncs import load_columns
 from frames.dialogs.createDbDialog import Ui_CreateDatabaseFromFile
-from frames.dialogs.chooseContainer import Ui_ChooseContainer
+from frames.dialogs.createContainer import Ui_CreateContainer
 from frames.dialogs.formatErrorDialog import Ui_FormatError
 from frames.dialogs.dbHandlers.inputDataDialog import Ui_InputData
 from frames.dialogs.dbHandlers.deleteRowDialog import Ui_DeleteDialog
@@ -15,7 +15,7 @@ from frames.dialogs.aboutCmapper import Ui_AboutDialog
 def refresh_db_visualization(self, tableName):
 
     if self.current_container == None: 
-        run_choose_container_dialog(self)
+        run_Create_Container_dialog(self)
     if self.current_container == None: 
         return 
     if tableName == None or tableName == "":
@@ -83,13 +83,12 @@ def run_about_dialog(self):
     self.AboutDialog.setupUi(self.About_Dialog)
     self.About_Dialog.show()
 
-def run_choose_container_dialog(self):
-    self.Choose_Container_Dialog = QtWidgets.QDialog()
-    self.Choose_Container = Ui_ChooseContainer()
-    self.Choose_Container.setupUi(self.Choose_Container_Dialog)
-    self.Choose_Container.main_window = self
-    self.Choose_Container_Dialog.show()
-    self.Choose_Container.set_containers_options(self.found_containers)
+def run_create_container_dialog(self):
+    self.Create_Container_Dialog = QtWidgets.QDialog()
+    self.create_container = Ui_CreateContainer()
+    self.create_container.setupUi(self.Create_Container_Dialog)
+    self.create_container.parent = self
+    self.Create_Container_Dialog.show()
 
 def run_format_error_dialog(self):
     self.FormatError_Dialog = QtWidgets.QDialog()

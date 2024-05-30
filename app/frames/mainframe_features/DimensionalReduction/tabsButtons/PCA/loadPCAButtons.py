@@ -79,7 +79,7 @@ def generate_pca_information(self):
     dataframe = self.current_dataframe.copy()
     n_comps = int(n_comps)
 
-    df, evr, error = None
+    df, evr, error = None, None, None
      
     if ignoreCol != "None":
         df, evr, error = apply_pca(dataframe.drop(columns=[ignoreCol]), scaler, n_comps)

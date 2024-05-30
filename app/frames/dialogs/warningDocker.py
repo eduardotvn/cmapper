@@ -19,6 +19,6 @@ class Ui_WarningDocker(object):
     def retranslateUi(self, WarningDocker):
         _translate = QtCore.QCoreApplication.translate
         WarningDocker.setWindowTitle(_translate("WarningDocker", "Warning"))
-        self.warning.setText(_translate("WarningDocker", "Warning: No docker container found. Start or find on \"Docker\".  "))
+        self.warning.setText(_translate("WarningDocker", "Warning: No cmapper docker container found. Start one in \"Create Container\".  "))
         self.ok.setText(_translate("WarningDocker", "Ok"))
 

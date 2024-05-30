@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_choose_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog, run_about_dialog
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_create_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog, run_about_dialog
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from PyQt5.QtWidgets import QTableWidgetItem
@@ -178,9 +178,9 @@ class Ui_MainWindow(object):
         self.actionCreate_DB.setObjectName("actionCreate_DB")
         self.actionCreate_DB.triggered.connect(lambda: run_create_table_dialog(self))
 
-        self.actionSelect_Docker = QtWidgets.QAction(MainWindow)
-        self.actionSelect_Docker.setObjectName("actionSelect_Docker")  
-        self.actionSelect_Docker.triggered.connect(lambda: run_choose_container_dialog(self))
+        self.actionCreate_Container = QtWidgets.QAction(MainWindow)
+        self.actionCreate_Container.setObjectName("actionCreate_Container")  
+        self.actionCreate_Container.triggered.connect(lambda: run_create_container_dialog(self))
 
         self.actionLoad_CSV = QtWidgets.QAction(MainWindow)
         self.actionLoad_CSV.setObjectName("actionLoad_CSV")
@@ -198,7 +198,7 @@ class Ui_MainWindow(object):
         self.menuDatabase.addAction(self.actionSelect_DB)
         self.menuDatabase.addAction(self.actionCreate_DB)
 
-        self.menuDocker.addAction(self.actionSelect_Docker)
+        self.menuDocker.addAction(self.actionCreate_Container)
 
         self.menuHelp.addAction(self.actionAbout_Cmapper)
         self.menuHelp.addAction(self.actionManual)
@@ -337,7 +337,7 @@ class Ui_MainWindow(object):
         self.actionOpen.setText(_translate("MainWindow", "Choose File"))
         self.actionSelect_DB.setText(_translate("MainWindow", "Select DB"))
         self.actionCreate_DB.setText(_translate("MainWindow", "Create Database"))
-        self.actionSelect_Docker.setText(_translate("MainWindow", "Select Docker"))
+        self.actionCreate_Container.setText(_translate("MainWindow", "Create Container"))
         self.actionLoad_CSV.setText(_translate("MainWindow", "Load File "))
         self.actionAbout_Cmapper.setText(_translate("MainWindow", "About Cmapper"))
         self.actionManual.setText(_translate("MainWindow", "Manual"))

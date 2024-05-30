@@ -48,6 +48,7 @@ class Ui_CreateDatabaseFromFile(object):
 
     def open_file_dialog(self):
         self.file_dialog = QFileDialog()
+        self.file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)
         self.file_dialog.setNameFilter("CSV Files (*.csv)")
         self.file_dialog.setViewMode(QFileDialog.Detail)
         self.file_dialog.setFileMode(QFileDialog.ExistingFile)

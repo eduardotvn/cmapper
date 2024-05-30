@@ -139,6 +139,7 @@ def save_SVM_model(self):
         QMessageBox.warning(self, "No Model", "There is no trained model to save.")
         return
     options = QFileDialog.Options()
+    options |= QFileDialog.DontUseNativeDialog
     file_path, _ = QFileDialog.getSaveFileName(self.window, 
                                                "Save SVM Model",
                                                "",
