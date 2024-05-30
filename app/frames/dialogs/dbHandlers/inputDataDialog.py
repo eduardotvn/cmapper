@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from db.handlers.handlers import insert_table
+from PyQt5.QtWidgets import QMessageBox
 
 class Ui_InputData(object):
     def __init__(self):
@@ -45,17 +46,22 @@ class Ui_InputData(object):
             return input
 
     def gather_data(self, InputData):
-        data = self.proccess_input(self.dataInput.text(), self.cols_info[0][1])
-        self.insertion_schema.append(data)
-        print(self.insertion_schema)
-        self.dataInput.clear()
-        self.cols_info.pop(0)
-        if len(self.cols_info) > 0: 
-            self.set_column_name(f'{self.cols_info[0][0]}')
-        else: 
-            insert_table(self.chosen_table, self.insertion_schema)
+        try:
+            data = self.proccess_input(self.dataInput.text(), self.cols_info[0][1])
+            self.insertion_schema.append(data)
+            self.dataInput.clear()
+            self.cols_info.pop(0)
+            if len(self.cols_info) > 0: 
+                self.set_column_name(f'{self.cols_info[0][0]}')
+            else: 
+                _, err = insert_table(self.chosen_table, self.insertion_schema)
+                if err is not None:
+                    QMessageBox.warning(self.window, "Error", f"{str(err)}")
+                self.refresh_db_visualization()
+                InputData.close()
+        except Exception as err: 
+            QMessageBox.warning(self.window, "Error", f"{str(err)}")
             InputData.close()
-
 
     def retranslateUi(self, InputData):
         _translate = QtCore.QCoreApplication.translate

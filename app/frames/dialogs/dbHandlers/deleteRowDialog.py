@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from db.handlers.handlers import delete_row
 
 class Ui_DeleteDialog(object):
@@ -32,7 +33,9 @@ class Ui_DeleteDialog(object):
     def delete_row_action(self, DeleteDialog):
         try:
             key = self.PKeyInput.text()
-            delete_row(self.chosen_table, key)
+            success, err = delete_row(self.chosen_table, key)
+            if err:
+                QMessageBox.warning(self.window, "Error", f"{str(err)}")
             DeleteDialog.close()
         except Exception as e: 
             print(e)

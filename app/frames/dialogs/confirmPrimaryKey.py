@@ -1,5 +1,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from db.fileHandling.csvIntoPostgres import turn_column_into_primary_key
 from db.handlers.handlers import create_new_pkey
 
@@ -46,10 +47,11 @@ class Ui_PrimaryKeyConfirm(object):
 
     def gen_pkey(self, PrimaryKeyConfirm):
         try: 
-            if create_new_pkey(self.chosen_table):
+            success, err = create_new_pkey(self.chosen_table)
+            if success:
                 print("Succesfuly created pkey")
             else: 
-                print("Something went wrong")
+                QMessageBox.warning(self.window, "Error", f"{str(err)}")
             PrimaryKeyConfirm.close()
         except Exception as e:
             print(e)

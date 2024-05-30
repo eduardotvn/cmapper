@@ -1,5 +1,6 @@
 from db.handlers.handlers import select_all_rows, select_all_cols_and_types, find_primary_key_column
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from .mainFuncs import load_columns
 from frames.dialogs.createDbDialog import Ui_CreateDatabaseFromFile
 from frames.dialogs.chooseContainer import Ui_ChooseContainer
@@ -20,7 +21,10 @@ def refresh_db_visualization(self, tableName):
     if tableName == None or tableName == "":
         return 
 
-    data, header = select_all_rows(tableName)
+    data, header, err = select_all_rows(tableName)
+    if err:
+        QMessageBox.warning(self.window, "Error", f"{str(err)}")
+        return 
 
     if len(data) == 0:
         self.DBVisualization.clear()
@@ -49,7 +53,10 @@ def run_db_insertion_dialog(self):
         self.InputData.setupUi(self.InputData_Dialog)
         self.InputData_Dialog.show()
 
-        cols_info = select_all_cols_and_types(chosen_table)
+        cols_info, err = select_all_cols_and_types(chosen_table)
+        if err: 
+            QMessageBox.warning(self.window, "Error", f"{str(err)}")
+            return 
         pkey = find_primary_key_column(chosen_table)
         if len(pkey) > 0:
             for col in cols_info:

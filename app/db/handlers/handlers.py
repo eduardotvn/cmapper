@@ -1,17 +1,19 @@
 import psycopg2
 from db.connection.connection import start_connection
+from typing import List, Tuple, Optional
 
-def insert_table(tableName, insertionSchema ) -> bool:
+def insert_table(tableName: str, insertionSchema: list ) -> Tuple[bool, Optional[Exception]]:
     try:
         _, conn = start_connection()
         cur = conn.cursor()
 
-        existing_columns = select_all_cols(tableName) 
+        existing_columns, err = select_all_cols(tableName)
+        if err: 
+            return False, err 
+
         pkey = find_primary_key_column(tableName)
         if len(pkey) > 0:
             existing_columns.remove(pkey[0])
-
-        print(pkey)
 
         insertion_query = f"INSERT INTO {tableName} "
         columns = "("
@@ -34,12 +36,11 @@ def insert_table(tableName, insertionSchema ) -> bool:
         conn.commit()
         cur.close()
         conn.close()
-        return True 
+        return True, None 
     except psycopg2.Error as e: 
-        raise psycopg2.Error(f"{e}")
-        return False 
+        return False, e
 
-def update_table(tableName, column, value, pkey) -> bool:
+def update_table(tableName, column, value, pkey) -> Tuple[bool, Optional[Exception]]:
     try:
         _, conn = start_connection()
         cur = conn.cursor()
@@ -56,12 +57,12 @@ def update_table(tableName, column, value, pkey) -> bool:
         cur.close()
         conn.close() 
 
-        return True
+        return True, None
     except Exception as e:
         print(e)
-        return False 
+        return False, e 
 
-def select_all_cols(tableName: str ) -> list: 
+def select_all_cols(tableName: str ) -> Tuple[list, Optional[Exception]]: 
     try: 
         _, conn = start_connection()
         cur = conn.cursor()
@@ -76,11 +77,11 @@ def select_all_cols(tableName: str ) -> list:
 
         cur.close()
         conn.close()
-        return headers
+        return headers, None
     except psycopg2.Error as e:
-        return []
+        return [], e
 
-def select_all_cols_and_types(tableName: str) -> list: 
+def select_all_cols_and_types(tableName: str) -> Tuple[list, Optional[Exception]]: 
     try: 
         _, conn = start_connection()
         cur = conn.cursor()
@@ -97,13 +98,12 @@ def select_all_cols_and_types(tableName: str) -> list:
         cur.close()
         conn.close()
 
-        return columns_info
+        return columns_info, None
     except psycopg2.Error as e:
-        print(f"Error: {e}")
-        return []
+        return [], e
 
         
-def select_all_rows(tableName ) -> list:
+def select_all_rows(tableName: str):
     try: 
         _, conn = start_connection() 
         cur = conn.cursor()
@@ -112,13 +112,15 @@ def select_all_rows(tableName ) -> list:
 
         all_rows = cur.fetchall()
 
-        headers = select_all_cols(tableName)
+        headers, err = select_all_cols(tableName)
+        if err: 
+            return [], [],err 
 
-        return all_rows, headers
+        return all_rows, headers, None
     except psycopg2.Error as e: 
-        return []
+        return [], [], e
 
-def filter_rows(tableName, filter, column ) -> list:
+def filter_rows(tableName: str, filter: str, column: str) -> Tuple[list, Optional[Exception]]:
     try:
         _, conn = start_connection()
 
@@ -129,12 +131,12 @@ def filter_rows(tableName, filter, column ) -> list:
         rows = cur.fetchall() 
         cur.close()
         conn.close()
-        return rows 
+        return rows, None
     except psycopg2.Error as e:
         raise psycopg2.Error(f"{e}")
-        return []
+        return [], e
 
-def delete_row(tableName, identifier ) -> bool:
+def delete_row(tableName: str, identifier: str) -> Tuple[bool, Optional[Exception]]:
     try: 
         _, conn = start_connection()
         cur = conn.cursor()
@@ -147,12 +149,11 @@ def delete_row(tableName, identifier ) -> bool:
         conn.commit() 
         cur.close()
         conn.close()
-        return True 
+        return True, None 
     except psycopg2.Error as e: 
-        raise psycopg2.Error(f"{e}")
-        return False 
+        return False, e
 
-def find_primary_key_column(tablename): 
+def find_primary_key_column(tablename: str): 
     try: 
         _, conn = start_connection()
         cur = conn.cursor()
@@ -168,17 +169,15 @@ def find_primary_key_column(tablename):
 
         cur.execute(query)
         col = cur.fetchall()
-        print("cols: ", col)
 
         cur.close()
         conn.close()  
+
         return [row[0] for row in col]
-
     except psycopg2.Error as e: 
-        print(e)
-        return []
+        return None
 
-def create_new_pkey(tableName): 
+def create_new_pkey(tableName: str) -> Tuple[bool, Optional[Exception]]: 
     try:
         _, conn = start_connection()
         cur = conn.cursor()
@@ -194,7 +193,7 @@ def create_new_pkey(tableName):
 
         cur.close()
         conn.close()
-        return True 
+        return True, None 
     except psycopg2.Error as e:
         print(e)
-        return False 
+        return False, e

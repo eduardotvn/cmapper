@@ -53,8 +53,10 @@ class Ui_UpdateDataDialog(object):
 
     def set_column_options(self, UpdateDataDialog):
         try:
-            print(self.chosen_table)
-            cols_and_types = select_all_cols_and_types(self.chosen_table)
+            cols_and_types, err = select_all_cols_and_types(self.chosen_table)
+            if err: 
+                QMessageBox.warning(self.window, "Error", f"{str(err)}")
+                return 
             pkey = find_primary_key_column(self.chosen_table)[0]
             self.column_options = [cols[0] for cols in cols_and_types]
             if pkey != None: 
@@ -68,7 +70,8 @@ class Ui_UpdateDataDialog(object):
             pkey = self.PrimaryKeyInput.text()
             col = self.ColumnsOptions.currentText()
             value = self.ValueInput.text()
-            if update_table(self.chosen_table, col, value, pkey):
+            success,_ = update_table(self.chosen_table, col, value, pkey)
+            if success:
                 QMessageBox.warning(UpdateDataDialog, "Success!", "The row was succesfuly updated.")
             if self.parent != None:
                 self.parent.run_refresh()

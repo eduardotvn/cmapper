@@ -7,14 +7,14 @@ from db.fileHandling.typechecker.checker import sqlTypeReturn, convert_to_iso_ti
 from db.handlers.handlers import select_all_cols
 from dateutil.parser import parse
 
-def is_date(string):
+def is_date(string: str) -> bool:
     try:
         parse(string)
         return True
     except ValueError:
         return False
 
-def get_csv_info(url):
+def get_csv_info(url: str):
     with open(url, 'r') as file:
         first_line = file.readline().strip()
         delimiters = [',','\t',':']
@@ -89,16 +89,21 @@ def try_table_creation(tableName : str, url : str) -> bool:
         conn.close()
         return True 
     except psycopg2.Error as e:
-        raise psycopg2.Error(f"{e}")
-        return False 
-
+        if conn:
+            conn.rollback()
+            cur.close()
+            conn.close()
+        return False
+ 
 
 def search_primary_key(tableName: str):
     try:
         _, conn = start_connection()
         cur = conn.cursor() 
 
-        all_cols = select_all_cols(tableName)
+        all_cols, err = select_all_cols(tableName)
+        if err: 
+            return None, err 
         candidates = []
 
         for col in all_cols: 
@@ -119,12 +124,12 @@ def search_primary_key(tableName: str):
             
         cur.close()
         conn.close()
-        return candidates
+        return candidates, None
         
     except psycopg2.Error as e:
-        return 
+        return None, e
 
-def turn_column_into_primary_key(tableName, column):
+def turn_column_into_primary_key(tableName: str, column: str) -> bool:
     try:
         _, conn = start_connection()
         cur = conn.cursor()
@@ -151,5 +156,4 @@ def turn_column_into_primary_key(tableName, column):
         return True
 
     except psycopg2.Error as e:
-        print(e)
         return False

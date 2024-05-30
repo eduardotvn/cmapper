@@ -17,7 +17,7 @@ def check_tables() -> list:
         print("Error while checking tables :", e)
         return []
 
-def create_table(tableName, tableSchema) -> bool: 
+def create_table(tableName: str, tableSchema: list) -> bool: 
     try: 
         _, conn = start_connection() 
         cur = conn.cursor() 
@@ -37,7 +37,7 @@ def create_table(tableName, tableSchema) -> bool:
     except psycopg2.Error as e:
         return False 
 
-def delete_table(tableName) -> bool:
+def delete_table(tableName: str) -> bool:
     try: 
         _, conn = start_connection()
         cur = conn.cursor()

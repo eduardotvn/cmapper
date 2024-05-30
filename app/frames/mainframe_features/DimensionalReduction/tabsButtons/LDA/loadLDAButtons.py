@@ -1,6 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem
 from utils.applyLDA import apply_lda
 from frames.buttons.mainFuncs import run_save_processed_df
 from frames.widgets.DfPlot import PlotWidget
@@ -102,6 +101,8 @@ def generate_LDA_information(self):
         return 
 
     n_comps = int(n_comps)
+
+    results, acc, err = None
 
     if ignoreCol != "None":
         results, acc, err = apply_lda(dataframe.drop(ignoreCol), n_comps, scaler, target)

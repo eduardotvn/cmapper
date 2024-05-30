@@ -5,16 +5,25 @@ from PyQt5.QtWidgets import QMessageBox
 
 def load_columns(self, tableName: str):
     try:  
-        cols = select_all_cols(tableName)
+        cols, err = select_all_cols(tableName)
+        if err: 
+            QMessageBox.warning(self.window, "Error", f"{str(err)}")
+            return 
         self.Columns.clear()
         self.Columns.addItems(cols)
     except Exception as e: 
-        print(e)
+        QMessageBox.warning(self.window, "Error", f"{str(e)}")
 
 def filter_db(self, tableName, filter_text):
     try:    
-        header = select_all_cols(tableName)
-        data = filter_rows(tableName, filter_text, self.Columns.currentText())
+        header, err = select_all_cols(tableName)
+        if err: 
+            QMessageBox.warning(self.window, "Error", f"{str(err)}")
+            return 
+        data, err = filter_rows(tableName, filter_text, self.Columns.currentText())
+        if err:
+            QMessageBox.warning(self.window, "Error", f"{str(err)}")
+            return 
 
         self.DBVisualization.setRowCount(len(data))
         self.DBVisualization.setColumnCount(len(data[0]))
@@ -28,8 +37,8 @@ def filter_db(self, tableName, filter_text):
         self.DBVisualization.resizeColumnsToContents()
         load_columns(self, tableName)
     except Exception as e:
-        print(e)
-
+        QMessageBox.warning(self.window, "Error", f"{str(e)}")
+        
 def save_data(self, dataframe):
     self.df_to_save = dataframe.copy()
 
