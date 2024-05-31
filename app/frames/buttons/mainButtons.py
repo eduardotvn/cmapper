@@ -10,6 +10,7 @@ from frames.dialogs.dbHandlers.deleteRowDialog import Ui_DeleteDialog
 from frames.dialogs.dbHandlers.createTableDialog import Ui_CreateTableDialog
 from frames.dialogs.dbHandlers.confirmDeleteDialog import Ui_ConfirmDeleteDialog
 from frames.dialogs.dbHandlers.updateDataDialog import Ui_UpdateDataDialog
+from frames.dialogs.Manual import Ui_Dialog
 from frames.dialogs.aboutCmapper import Ui_AboutDialog
 
 def refresh_db_visualization(self, tableName):
@@ -117,6 +118,12 @@ def run_create_table_dialog(self):
     self.CTDialog.setupUi(self.CreateTable_Dialog)
     self.CreateTable_Dialog.show()
     self.CTDialog.parent = self 
+
+def run_manual_dialog(self):
+    self.Manual_Dialog = QtWidgets.QDialog()
+    self.MDialog = Ui_Dialog()
+    self.MDialog.setupUi(self.Manual_Dialog)
+    self.Manual_Dialog.show()
 
 def run_delete_db_dialog(self):
     self.ConfirmDeleteDialog = QtWidgets.QDialog()

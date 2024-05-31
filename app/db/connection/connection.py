@@ -17,5 +17,6 @@ def start_connection(retry_count=5, delay=2):
         except psycopg2.Error as e:
             print(f"Attempt {attempt+1} failed: {e}")
             last_exception = e
-            time.sleep(delay)  
-            return last_exception, None
+            time.sleep(delay)
+            if attempt == 4:  
+                return last_exception, None

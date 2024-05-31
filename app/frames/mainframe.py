@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_create_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog, run_about_dialog
+from .buttons.mainButtons import refresh_db_visualization, run_creation_dialog, run_create_container_dialog, run_db_insertion_dialog, run_delete_row_dialog, run_create_table_dialog, run_delete_db_dialog, run_update_row_dialog, run_about_dialog, run_manual_dialog
 from .buttons.mainFuncs import filter_db
 from docker.findcontainers import run_container
 from PyQt5.QtWidgets import QTableWidgetItem
@@ -66,14 +66,10 @@ class Ui_MainWindow(object):
         self.AddColumn_Action = QtWidgets.QAction(self.AdvancedOptions)
         self.AddColumn_Action.setText("Add Column")
 
-        self.SumTables_Action = QtWidgets.QAction(self.AdvancedOptions)
-        self.SumTables_Action.setText("Sum Tables")
-
         self.DeleteColumn_Action = QtWidgets.QAction(self.AdvancedOptions)
         self.DeleteColumn_Action.setText("Delete Column")
 
         self.AdvancedOptionsMenu.addAction(self.AddColumn_Action)
-        self.AdvancedOptionsMenu.addAction(self.SumTables_Action)
         self.AdvancedOptionsMenu.addAction(self.DeleteColumn_Action)
         self.AdvancedOptions.setMenu(self.AdvancedOptionsMenu)
 
@@ -171,9 +167,6 @@ class Ui_MainWindow(object):
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.triggered.connect(lambda: run_creation_dialog(self))
 
-        self.actionSelect_DB = QtWidgets.QAction(MainWindow)
-        self.actionSelect_DB.setObjectName("actionSelect_DB")
-
         self.actionCreate_DB = QtWidgets.QAction(MainWindow)
         self.actionCreate_DB.setObjectName("actionCreate_DB")
         self.actionCreate_DB.triggered.connect(lambda: run_create_table_dialog(self))
@@ -191,11 +184,11 @@ class Ui_MainWindow(object):
 
         self.actionManual = QtWidgets.QAction(MainWindow)
         self.actionManual.setObjectName("actionManual")
+        self.actionManual.triggered.connect(lambda: run_manual_dialog(self))
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionClose)
 
-        self.menuDatabase.addAction(self.actionSelect_DB)
         self.menuDatabase.addAction(self.actionCreate_DB)
 
         self.menuDocker.addAction(self.actionCreate_Container)
@@ -335,7 +328,6 @@ class Ui_MainWindow(object):
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionClose.setText(_translate("MainWindow", "Close "))
         self.actionOpen.setText(_translate("MainWindow", "Choose File"))
-        self.actionSelect_DB.setText(_translate("MainWindow", "Select DB"))
         self.actionCreate_DB.setText(_translate("MainWindow", "Create Database"))
         self.actionCreate_Container.setText(_translate("MainWindow", "Create Container"))
         self.actionLoad_CSV.setText(_translate("MainWindow", "Load File "))
